@@ -1,5 +1,6 @@
 from abc import ABC
-from typing import Tuple, Optional, List
+from typing import Tuple, Optional
+import os.path
 
 import openpyxl as xl
 from openpyxl.workbook.workbook import Workbook
@@ -7,9 +8,10 @@ from openpyxl.worksheet.worksheet import Worksheet
 
 
 class ExcelFile(ABC):
-    def __init__(self, file_name: str, worksheet_number: int = 0):
-        self.file_name = file_name
-        self.wb, self.ws = ExcelFile.open_file(file_name, worksheet_number)
+    def __init__(self, file_path: str, worksheet_number: int = 0):
+        self.file_path = file_path
+        self.file_name = os.path.basename(file_path)
+        self.wb, self.ws = ExcelFile.open_file(file_path, worksheet_number)
 
     @staticmethod
     def open_file(file_name: str, worksheet_number: int = 0) -> Tuple[Optional[Workbook], Optional[Worksheet]]:
@@ -24,13 +26,6 @@ class ExcelFile(ABC):
         else:
             return None, None
 
-    def change_print_area(self, print_area: List[str]) -> None:
-        if self.ws is None:
-            raise ValueError("Worksheet is not initialized")
-            
-        print_area = print_area if print_area else self.ws.print_area
-        self.ws.print_area = print_area
-
     def save_file(self, new_file_name: str = None) -> None:
         if self.wb is None:
             raise ValueError("Workbook is not initialized")
@@ -40,3 +35,11 @@ class ExcelFile(ABC):
             self.wb.save(new_file_name)
         except Exception as e:
             print(f"Error saving file {new_file_name}: {e}")
+
+    # # Used in previous version
+    # def change_print_area(self, print_area: List[str]) -> None:
+    #     if self.ws is None:
+    #         raise ValueError("Worksheet is not initialized")
+    #
+    #     print_area = print_area if print_area else self.ws.print_area
+    #     self.ws.print_area = print_area
