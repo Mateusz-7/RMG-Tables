@@ -35,7 +35,7 @@ class GoogleMyMapsParser:
 
     def _parse_data(self, raw_data: str):
         soup = BeautifulSoup(raw_data, 'html.parser')
-        script = soup.find_all('script')[1].text
+        script = soup.find_all('script')[2].text
         js = self.parser.parse(script)
         page_data = js['body'][1]['declarations'][0]['init']['value']
 
