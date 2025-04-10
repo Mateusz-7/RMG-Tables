@@ -1,8 +1,10 @@
+import re
+
 import openpyxl as xl
 from openpyxl.utils import get_column_letter
 
-from .excel_file import ExcelFile
 from GoogleMyMaps.models import *
+from .excel_file import ExcelFile
 
 
 class ObstacleList(ExcelFile):
@@ -14,104 +16,96 @@ class ObstacleList(ExcelFile):
     def __init__(self, google_map: Map):
         super().__init__(self.file_path)
         self.google_map = google_map # Do I need this?
-        self.course_layers = [
+        self.courses = [
             layer for layer in self.google_map.layers
-            if layer.name.upper().startswith("TRASA") and not layer.name.upper().endswith("KIDS")
+            if layer.name.upper().startswith("TRASA")
         ]
-        self.kids_layer = next((layer for layer in self.google_map.layers if layer.name.upper().endswith("KIDS")), None)
-        # TODO: Note that courses has to start with TRASA; KIDS ends with KIDS; first layer is the longest course
+        # TODO: Note that courses has to start with TRASA; KIDS last layer; first layer is the longest course / add visual options
 
-    def add_headlines(self):
-        for course in self.course_layers:
-            cell_column = get_column_letter(self.course_layers.index(course) * 3 + 1)
+    @staticmethod
+    def _get_obstacle_number(obstacle: Place) -> int | None:
+        if obstacle.place_type == "Point" and obstacle.icon:
+            match = re.search(r'&text=(\d+)', obstacle.icon)
+            if match:
+                return int(match.group(1))
+        return None
+
+    def _get_main_obstacles_number(self) -> int:
+        main_course = self.courses[0]
+        for obstacle in reversed(main_course.places):
+            number = self._get_obstacle_number(obstacle)
+            if number is not None:
+                return number
+        return 0
+
+    def _save_headlines(self):
+        for course in self.courses:
+            cell_column = get_column_letter(self.courses.index(course) * 3 + 1)
             cell_line = '1'
-            cell_value = course.name
-            cell_value = cell_value[6:]
+            cell_value = course.name[6:]
 
             self.ws[cell_column + cell_line] = cell_value
 
-########################################################################################################################
-    def save_obstacles_info(self, formula_id: int):
+    def _save_course_info(self, course: Layer):
         important_names = ["START", "META", "START KIDS", "META KIDS"]
+        line_offset = self._get_main_obstacles_number() + 4 if "KIDS" in course.name.upper() else 3
+        numbers_column_number = self.courses.index(course) * 3 + 1
 
-        formula = self.my_map.formulas[formula_id]
-        numbers_column_number = self.my_map.formulas.index(formula) * 3 + 1
-        line_offset = self.my_map.number_of_big_obstacles + 1 if "KIDS" in formula.name else 0
+        for obstacle in course.places:
+            obstacle_number = self._get_obstacle_number(obstacle)
+            cell_line = obstacle_number + line_offset
 
-        for obstacle_number, obstacle in enumerate(formula.obstacles):
-            line_number = 3 + obstacle_number + line_offset
+            self.ws[get_column_letter(numbers_column_number) + str(cell_line)] = obstacle_number
+            # self.ws[get_column_letter(numbers_column_number + 1) + str(cell_line)] = # Area number
+            # self.ws[get_column_letter(numbers_column_number + 2) + str(cell_line)] = # KM number
 
-            self.ws[get_column_letter(numbers_column_number) + str(line_number)] = obstacle_number + 1
-            self.ws[get_column_letter(numbers_column_number + 1) + str(line_number)] = \
-                self.my_map.witch_area_contains_obstacle(obstacle)
-
-            self.ws["S" + str(line_number)] = obstacle.name
+            self.ws["S" + str(cell_line)] = obstacle.name
             if obstacle.name in important_names:
-                self.ws["S" + str(line_number)].font = xl.styles.Font(bold=True, name="Calibri")
+                self.ws["S" + str(cell_line)].font = xl.styles.Font(bold=True, name="Calibri")
 
-            self.ws["T" + str(line_number)] = obstacle.number_of_volunteers if obstacle.number_of_volunteers > 0 else ""
-            self.ws["U" + str(line_number)] = obstacle.number_of_judges if obstacle.number_of_judges > 0 else ""
-            self.ws["X" + str(line_number)] = obstacle.comment
+            self.ws["T" + str(cell_line)] = obstacle.data[0] if obstacle.data[0] > 0 else ""
+            self.ws["U" + str(cell_line)] = obstacle.data[1] if obstacle.data[1] > 0 else ""
+            self.ws["X" + str(cell_line)] = obstacle.data[2]
+            # TODO: Make sure of the sequence of data, especially KIDS (no wolo/judge)
 
-    def save_obstacles_numbers(self, formula: Formula):
-        numbers_column_number = self.my_map.formulas.index(formula) * 3 + 1
-        line_offset = self.my_map.number_of_big_obstacles + 1
+            # self.ws["V" + str(cell_line)] = # Responsible person
 
-        number_of_current_layer_obstacle = 0
-        while number_of_current_layer_obstacle < formula.number_of_obstacles:
-            is_any_found_this_iteration = False
-            for obstacle_number, obstacle in enumerate(self.my_map.formulas[0].obstacles):
-                if formula.obstacles[number_of_current_layer_obstacle].name == obstacle.name:
-                    line_number = 3 + obstacle_number
+    def _save_obstacles_numbers(self, course: Layer):
+        numbers_column_number = self.courses.index(course) * 3 + 1
+        line_offset = self._get_main_obstacles_number() + 4
 
-                    self.ws[get_column_letter(numbers_column_number) + str(line_number)] = \
-                        number_of_current_layer_obstacle + 1
-                    self.ws[get_column_letter(numbers_column_number + 1) + str(line_number)] = \
-                        self.my_map.witch_area_contains_obstacle(obstacle)
-                    number_of_current_layer_obstacle += 1
-                    is_any_found_this_iteration = True
-                    continue
+        for obstacle in course.places:
+            for main_obstacle in self.courses[0].places: # TODO: Counter for latest found obstacle
+                if main_obstacle.name == obstacle.name:
+                    cell_line = self._get_obstacle_number(main_obstacle) + 3
 
-            for obstacle_number, obstacle in enumerate(self.my_map.formulas[-1].obstacles):
-                if number_of_current_layer_obstacle == formula.number_of_obstacles:
+                    # TODO: Check if obstacle is not already numbered
+                    self.ws[get_column_letter(numbers_column_number) + str(cell_line)] = self._get_obstacle_number(obstacle)
+                    # self.ws[get_column_letter(numbers_column_number + 1) + str(cell_line)] = # Area number
+                    # self.ws[get_column_letter(numbers_column_number + 2) + str(cell_line)] = # KM number
+
                     break
-                if formula.obstacles[number_of_current_layer_obstacle].name == obstacle.name:
-                    line_number = 3 + obstacle_number + line_offset
+                # TODO: if obstacle not found -> look in kids -> if still not found -> visual indication
 
-                    self.ws[get_column_letter(numbers_column_number) + str(line_number)] = \
-                        number_of_current_layer_obstacle + 1
-                    self.ws[get_column_letter(numbers_column_number + 1) + str(line_number)] = \
-                        self.my_map.witch_area_contains_obstacle(obstacle)
-                    number_of_current_layer_obstacle += 1
-                    is_any_found_this_iteration = True
-                    continue
-
-            if not is_any_found_this_iteration:
-                number_of_current_layer_obstacle += 1
-
-    def save_all_info(self):
-        self.save_obstacles_info(0)
-        self.save_obstacles_info(-1)
-        for formula in self.my_map.formulas[1:-1]:
-            self.save_obstacles_numbers(formula)
-
-    def hide_unnecessary_columns_and_rows(self):
-        self.ws.column_dimensions.group(get_column_letter(len(self.my_map.formulas) * 3 + 1),
-                                        get_column_letter(18), hidden=True)
-        self.ws.row_dimensions.group(self.my_map.number_of_all_obstacles + 4, 200, hidden=True)
-
-    def sum_and_save_number_of_volunteers_and_judges(self):
+    def _sum_and_save_number_of_volunteers_and_judges(self):
         self.ws["T201"] = f"=SUM(T3:T200)"
         self.ws["U201"] = f"=SUM(U3:U200)"
 
-    def save_data(self):
-        self.add_headlines()
-        self.save_all_info()
-        self.sum_and_save_number_of_volunteers_and_judges()
+    def hide_unnecessary_columns_and_rows(self):
+        self.ws.column_dimensions.group(get_column_letter(len(self.courses) * 3 + 1),
+                                        get_column_letter(18), hidden=True)
+        self.ws.row_dimensions.group(self._get_main_obstacles_number() + 4, 200, hidden=True)
+
+    def _save_data(self):
+        self._save_headlines()
+        self._save_course_info(self.courses[0])
+        self._save_course_info(self.courses[-1])
+        for course in self.courses[1:-1]:
+            self._save_obstacles_numbers(course)
+        self._sum_and_save_number_of_volunteers_and_judges()
         self.hide_unnecessary_columns_and_rows()
 
     @classmethod
     def create_and_save(cls, google_map: Map):
         obstacle_list = cls(google_map)
-        obstacle_list.save_data()
-        return obstacle_list
+        obstacle_list._save_data()

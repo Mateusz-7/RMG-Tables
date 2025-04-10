@@ -13,3 +13,5 @@ if __name__ == '__main__':
     # 2: add graphic interface
     # 3: ensure compatibility across different operating systems
     # 4: add more features (kilometers, person assigned)
+
+    # TODO: Tkinter -> save file where user wants
