@@ -5,6 +5,7 @@ from .error_window import ErrorWindow
 
 from .map_link_frame import MapLinkFrame
 from .loading_frame import LoadingFrame
+from excel_tables.obstacle_list import ObstacleList
 
 class MainApp(tk.Tk):
     def __init__(self):
@@ -56,7 +57,7 @@ class MainApp(tk.Tk):
 
     def process_map(self):
         print("Map loaded successfully")
-
+        ObstacleList.create_and_save(self.google_map)
 
     def failed_to_load_map(self, error_message: str):
         print(f"Failed to load map: {error_message}")

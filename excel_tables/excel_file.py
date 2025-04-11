@@ -19,6 +19,7 @@ class ExcelFile(ABC):
             try:
                 wb = xl.load_workbook(file_name)
                 ws = wb.worksheets[worksheet_number] if worksheet_number < len(wb.worksheets) else None
+                print(f'File "{file_name}" opened successfully')
                 return wb, ws
             except Exception as e:
                 print(f"Error opening file {file_name}: {e}")
@@ -33,6 +34,7 @@ class ExcelFile(ABC):
         new_file_name = new_file_name if new_file_name else self.file_name
         try:
             self.wb.save(new_file_name)
+            print(f'File "{new_file_name}" saved successfully')
         except Exception as e:
             print(f"Error saving file {new_file_name}: {e}")
 

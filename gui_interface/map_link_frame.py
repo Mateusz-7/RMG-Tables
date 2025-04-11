@@ -26,6 +26,9 @@ class MapLinkFrame(tk.Frame):
         self.entry.bind("<Return>", lambda event: self.submit_link())
         self.entry.focus_set()
 
+        # TODO: Delete after testing
+        self.entry.insert(0, "https://www.google.com/maps/d/u/0/edit?mid=1QU5ydDpF5bg_8jfQca3An2qJfqddpcY&ll=53.08931730768191%2C21.56582239999997&z=15")
+
         submit_button = tk.Button(
             content_frame,
             text="GENERUJ",
