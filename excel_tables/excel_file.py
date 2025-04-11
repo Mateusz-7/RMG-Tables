@@ -17,11 +17,12 @@ class ExcelFile(ABC):
 
     @staticmethod
     def open_file(file_name: str, worksheet_number: int = 0) -> Tuple[Optional[Workbook], Optional[Worksheet]]:
+        print("Opening file: ", file_name)
         if file_name:
             try:
                 wb = xl.load_workbook(file_name)
                 ws = wb.worksheets[worksheet_number] if worksheet_number < len(wb.worksheets) else None
-                print(f'File "{file_name}" opened successfully')
+                print("File opened successfully: ", file_name)
                 return wb, ws
             except Exception as e:
                 print(f"Error opening file {file_name}: {e}")
@@ -29,7 +30,8 @@ class ExcelFile(ABC):
         else:
             return None, None
 
-    def save_file(self, new_file_name: str = None) -> None:
+    def save_file(self, new_file_name: str = None) -> str | None:
+        print("Saving file:", self.file_name)
         if self.wb is None:
             raise ValueError("Workbook is not initialized")
 
@@ -46,11 +48,13 @@ class ExcelFile(ABC):
         if new_file_name:
             try:
                 self.wb.save(new_file_name)
-                print(f'File "{new_file_name}" saved successfully')
+                print("File saved successfully: ", new_file_name)
+                return new_file_name
             except Exception as e:
                 print(f"Error saving file {new_file_name}: {e}")
         else:
             print("File name not provided")
+            return None
 
     # # Used in previous version
     # def change_print_area(self, print_area: List[str]) -> None:

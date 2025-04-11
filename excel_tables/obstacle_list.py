@@ -106,7 +106,7 @@ class ObstacleList(ExcelFile):
             hidden=True
         )
 
-    def _save_data(self):
+    def _save_data(self) -> str | None:
         self._save_headlines()
         self._save_course_info(self.courses[0])
         self._save_course_info(self.courses[-1])
@@ -114,9 +114,9 @@ class ObstacleList(ExcelFile):
             self._save_obstacles_numbers(course)
         self._sum_and_save_number_of_volunteers_and_judges()
         self.hide_unnecessary_columns_and_rows()
-        self.save_file(self.google_map.name + " - LISTA PRZESZKÓD.xlsx")
+        return self.save_file(self.google_map.name + " - LISTA PRZESZKÓD.xlsx")
 
     @classmethod
-    def create_and_save(cls, google_map: Map):
+    def create_and_save(cls, google_map: Map) -> str | None:
         obstacle_list = cls(google_map)
-        obstacle_list._save_data()
+        return obstacle_list._save_data()

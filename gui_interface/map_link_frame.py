@@ -3,6 +3,7 @@ import tkinter as tk
 
 class MapLinkFrame(tk.Frame):
     def __init__(self, parent, controller):
+        print("Please provide map link")
         super().__init__(parent)
         self.controller = controller
         self.config(bg="#232323")
@@ -18,12 +19,13 @@ class MapLinkFrame(tk.Frame):
             text="Podaj link do mapy:",
             font=("Runmageddon", 35),
             bg="#232323",
-            fg="#ffde00")
+            fg="#ffde00"
+        )
         label.pack(pady=(0, 60))
 
         self.entry = tk.Entry(content_frame, width=70, font=("Arial", 10))
         self.entry.pack(pady=10)
-        self.entry.bind("<Return>", lambda event: self.submit_link())
+        self.bind_submit_button()
         self.entry.focus_set()
 
         # TODO: Delete after testing
@@ -38,6 +40,7 @@ class MapLinkFrame(tk.Frame):
             activeforeground="#ffde00",
             activebackground="#232323",
             bd=5,
+            width=10,
             command=self.submit_link
         )
         submit_button.pack(pady=10)
@@ -45,5 +48,12 @@ class MapLinkFrame(tk.Frame):
     def submit_link(self):
         map_link = self.entry.get()
         if map_link:
+            print("Map link provided:", map_link)
             self.controller.show_frame("LoadingFrame")
             self.controller.process_map_link(map_link)
+
+    def bind_submit_button(self):
+        self.entry.bind("<Return>", lambda event: self.submit_link())
+
+    def unbind_submit_button(self):
+        self.entry.unbind("<Return>")

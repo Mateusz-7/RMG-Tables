@@ -2,6 +2,7 @@ import tkinter as tk
 import threading
 from GoogleMyMaps import GoogleMyMaps
 from .error_window import ErrorWindow
+from .final_frame import FinalFrame
 
 from .map_link_frame import MapLinkFrame
 from .loading_frame import LoadingFrame
@@ -9,6 +10,7 @@ from excel_tables.obstacle_list import ObstacleList
 
 class MainApp(tk.Tk):
     def __init__(self):
+        print("Initializing application...")
         super().__init__()
         self.title("RMG - Robot Mateusza Grzech")
         self.geometry("600x400")
@@ -20,7 +22,7 @@ class MainApp(tk.Tk):
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
 
-        for F in (MapLinkFrame, LoadingFrame):
+        for F in (MapLinkFrame, LoadingFrame, FinalFrame):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -28,8 +30,10 @@ class MainApp(tk.Tk):
 
         self.gmm = GoogleMyMaps()
         self.google_map = None
+        self.obstacle_list_file = None
 
         self.show_frame("MapLinkFrame")
+        self.bind("<Escape>", self.quit_app)
 
     def center_window(self, width, height):
         screen_width = self.winfo_screenwidth()
@@ -57,11 +61,26 @@ class MainApp(tk.Tk):
 
     def process_map(self):
         print("Map loaded successfully")
-        ObstacleList.create_and_save(self.google_map)
+        self.obstacle_list_file = ObstacleList.create_and_save(self.google_map)
+        if self.obstacle_list_file is None:
+            self.reopen_map_frame()
+        else:
+            self.frames["MapLinkFrame"].unbind_submit_button()
+            self.frames["FinalFrame"].bind_open_button()
+            self.show_frame("FinalFrame")
+
 
     def failed_to_load_map(self, error_message: str):
         print(f"Failed to load map: {error_message}")
         ErrorWindow(self, error_message)
+        self.reopen_map_frame()
 
+    def reopen_map_frame(self):
+        print("Please provide map link again")
         self.frames["MapLinkFrame"].entry.delete(0, tk.END)
+        self.frames["MapLinkFrame"].bind_submit_button()
         self.show_frame("MapLinkFrame")
+
+    def quit_app(self, event=None):
+        print("Closing application...")
+        self.destroy()
