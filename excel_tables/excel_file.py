@@ -1,6 +1,8 @@
-from abc import ABC
-from typing import Tuple, Optional
 import os.path
+import tkinter as tk
+from abc import ABC
+from tkinter import filedialog
+from typing import Tuple, Optional
 
 import openpyxl as xl
 from openpyxl.workbook.workbook import Workbook
@@ -30,13 +32,25 @@ class ExcelFile(ABC):
     def save_file(self, new_file_name: str = None) -> None:
         if self.wb is None:
             raise ValueError("Workbook is not initialized")
-            
-        new_file_name = new_file_name if new_file_name else self.file_name
-        try:
-            self.wb.save(new_file_name)
-            print(f'File "{new_file_name}" saved successfully')
-        except Exception as e:
-            print(f"Error saving file {new_file_name}: {e}")
+
+        root = tk.Tk()
+        root.withdraw()
+        new_file_name = filedialog.asksaveasfilename(
+            initialdir=".",
+            initialfile=new_file_name,
+            defaultextension=".xlsx",
+            filetypes=(("Excel files", "*.xlsx"), ("All files", "*.*"))
+        )
+        root.destroy()
+
+        if new_file_name:
+            try:
+                self.wb.save(new_file_name)
+                print(f'File "{new_file_name}" saved successfully')
+            except Exception as e:
+                print(f"Error saving file {new_file_name}: {e}")
+        else:
+            print("File name not provided")
 
     # # Used in previous version
     # def change_print_area(self, print_area: List[str]) -> None:
