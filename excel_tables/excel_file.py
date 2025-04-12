@@ -3,6 +3,7 @@ import tkinter as tk
 from abc import ABC
 from tkinter import filedialog
 from typing import Tuple, Optional
+import sys, os
 
 import openpyxl as xl
 from openpyxl.workbook.workbook import Workbook
@@ -63,3 +64,9 @@ class ExcelFile(ABC):
     #
     #     print_area = print_area if print_area else self.ws.print_area
     #     self.ws.print_area = print_area
+
+def resource_path(relative_path):
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
+    # resource_path()

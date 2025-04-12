@@ -6,10 +6,15 @@ map_link = 'https://www.google.com/maps/d/u/0/edit?mid=1QU5ydDpF5bg_8jfQca3An2qJ
 if __name__ == '__main__':
     app = MainApp()
     app.mainloop()
-    
-    # 1: generate list of obstacles
-    # 2: add graphic interface
-    # 3: ensure compatibility across different operating systems
-    # 4: add more features (kilometers, person assigned)
 
-    # TODO: Tkinter -> save file where user wants
+    # TODO:
+    # - danie kidsów na koniec listy (rozdzielenie?)
+    # - optymalizacja/poprawa numerowania
+    # - nazewnictwo danych
+    # - dodanie komentarzy (najdłuzszy dystans pierwszy, dystanse zaczynają się od TRASA)
+
+    # - dodanie stref
+    # - dodanie kilometrów
+    # - dodanie odpowiedzialnej osoby
+
+    # - usuwanie wierszy/kolumn?

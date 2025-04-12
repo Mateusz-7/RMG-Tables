@@ -94,7 +94,7 @@ class ObstacleList(ExcelFile):
         self.ws["T201"] = f"=SUM(T3:T200)"
         self.ws["U201"] = f"=SUM(U3:U200)"
 
-    def hide_unnecessary_columns_and_rows(self):
+    def _hide_unnecessary_columns_and_rows(self):
         self.ws.column_dimensions.group(
             get_column_letter(len(self.courses) * 3 + 1),
             get_column_letter(18),
@@ -113,7 +113,7 @@ class ObstacleList(ExcelFile):
         for course in self.courses[1:-1]:
             self._save_obstacles_numbers(course)
         self._sum_and_save_number_of_volunteers_and_judges()
-        self.hide_unnecessary_columns_and_rows()
+        self._hide_unnecessary_columns_and_rows()
         return self.save_file(self.google_map.name + " - LISTA PRZESZKÓD.xlsx")
 
     @classmethod

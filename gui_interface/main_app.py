@@ -13,6 +13,7 @@ class MainApp(tk.Tk):
         print("Initializing application...")
         super().__init__()
         self.title("RMG - Robot Mateusza Grzech")
+        self.iconbitmap("robot.ico")
         self.geometry("600x400")
         self.center_window(600, 400)
 
