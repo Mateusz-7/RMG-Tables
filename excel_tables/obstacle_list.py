@@ -1,9 +1,21 @@
 from typing import Optional
 
+from openpyxl.utils import get_column_letter
+
 from GoogleMyMaps.models import *
 from .courses import Courses
 from .excel_file import ExcelFile
 
+IMPORTANT_OBSTACLE_NAMES = ["START", "META", "START KIDS", "META KIDS"]
+COLUMN_LAST_COURSE = 18
+COLUMN_NAME = 19
+COLUMN_WOLO = 20
+COLUMN_JUDGE = 21
+# COLUMN_ODPOWIEDZIALNY? = 22
+COLUMN_INFO = 24
+ROW_HEADERS = 1
+ROW_OBSTACLES_OFFSET = 2
+ROW_MAX = 200
 
 class ObstacleList(ExcelFile):
     file_name = "LISTA PRZESZKÓD"
@@ -13,11 +25,10 @@ class ObstacleList(ExcelFile):
         super().__init__(self.file_path)
         self.google_map = google_map
         self.course_map = Courses(google_map)
-        # TODO: put here offsets, columns, or as methods?
 
     def _write_headlines(self):
         for course in self.course_map.courses_list:
-            self._write_cell(self._get_course_column_number(course), 1, course.name[6:])
+            self._write_cell(self._get_course_column_number(course), ROW_HEADERS, course.name[6:])
 
     def _get_course_column_number(self, course: Layer) -> int:
         return self.course_map.get_course_index(course) * 3 + 1
@@ -28,23 +39,21 @@ class ObstacleList(ExcelFile):
         # self.ws[get_column_letter(numbers_column_number + 2) + str(cell_line)] = # KM number
 
     def _write_obstacle_name_data(self, obstacle: Place, obstacle_row: int):
-        important_names = ["START", "META", "START KIDS", "META KIDS"] # TODO: change location?
-
-        self._write_cell(19, obstacle_row, obstacle.name)
-        if obstacle.name in important_names:
-            self._bold_cell(19, obstacle_row)
+        self._write_cell(COLUMN_NAME, obstacle_row, obstacle.name)
+        if obstacle.name in IMPORTANT_OBSTACLE_NAMES:
+            self._bold_cell(COLUMN_NAME, obstacle_row)
 
         # self.ws["V" + str(cell_line)] = # Responsible person
 
         if obstacle.data is None:
             return
-        self._write_cell(20, obstacle_row, int(obstacle.data.get("WOLO", "")) if int(obstacle.data.get("WOLO", 0)) > 0 else "")
-        self._write_cell(21, obstacle_row, int(obstacle.data.get("SĘDZIA", "")) if int(obstacle.data.get("SĘDZIA", 0)) > 0 else "")
-        self._write_cell(24, obstacle_row, obstacle.data.get("OPIS", ""))
+        self._write_cell(COLUMN_WOLO, obstacle_row, int(obstacle.data.get("WOLO", "")) if int(obstacle.data.get("WOLO", 0)) > 0 else "")
+        self._write_cell(COLUMN_JUDGE, obstacle_row, int(obstacle.data.get("SĘDZIA", "")) if int(obstacle.data.get("SĘDZIA", 0)) > 0 else "")
+        self._write_cell(COLUMN_INFO, obstacle_row, obstacle.data.get("OPIS", ""))
         # TODO: Make sure of the data naming
 
     def _write_course_info(self, course: Layer):
-        row_offset = self.course_map.get_course_obstacles_number(self.course_map.courses_list[0]) + 3 if "KIDS" in course.name.upper() else 2
+        row_offset = self.course_map.get_course_obstacles_number(self.course_map.courses_list[0]) + ROW_OBSTACLES_OFFSET + 2 if "KIDS" in course.name.upper() else ROW_OBSTACLES_OFFSET
 
         for obstacle in course.places:
             if obstacle.place_type != "Point":
@@ -61,8 +70,8 @@ class ObstacleList(ExcelFile):
 
     def _write_obstacles_numbers(self, course: Layer):
         course_column = self._get_course_column_number(course)
-        obstacle_row_offset = 2
-        kids_obstacle_row_offset = self.course_map.get_course_obstacles_number(self.course_map.courses_list[0]) + 4
+        obstacle_row_offset = ROW_OBSTACLES_OFFSET
+        kids_obstacle_row_offset = self.course_map.get_course_obstacles_number(self.course_map.courses_list[0]) + ROW_OBSTACLES_OFFSET + 2
 
         last_found_obstacle_index = -1
         for analysed_obstacle in course.places:
@@ -131,18 +140,18 @@ class ObstacleList(ExcelFile):
         return None
 
     def _sum_and_write_number_of_volunteers_and_judges(self):
-        self._write_cell(20, 201, "=SUM(T3:T200)")
-        self._write_cell(21, 201, "=SUM(U3:U200)")
+        self._write_cell(COLUMN_WOLO, ROW_MAX + 1, f"=SUM({get_column_letter(COLUMN_WOLO)}{ROW_OBSTACLES_OFFSET + 1}:{get_column_letter(COLUMN_WOLO)}{ROW_MAX})")
+        self._write_cell(COLUMN_JUDGE, ROW_MAX + 1, f"=SUM({get_column_letter(COLUMN_JUDGE)}{ROW_OBSTACLES_OFFSET + 1}:{get_column_letter(COLUMN_JUDGE)}{ROW_MAX})")
 
     def _hide_unnecessary_columns_and_rows(self):
         self._group_columns(
             self._get_course_column_number(self.course_map.courses_list[-1]) + 3,
-            18,
+            COLUMN_LAST_COURSE,
             True
         )
         self._group_rows(
-            self.course_map.get_course_obstacles_number(self.course_map.courses_list[0]) + self.course_map.get_course_obstacles_number(self.course_map.courses_list[-1]) + 4,
-            200,
+            self.course_map.get_course_obstacles_number(self.course_map.courses_list[0]) + self.course_map.get_course_obstacles_number(self.course_map.courses_list[-1]) + ROW_OBSTACLES_OFFSET + 2,
+            ROW_MAX,
             True
         )
 

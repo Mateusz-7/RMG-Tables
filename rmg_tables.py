@@ -9,7 +9,6 @@ if __name__ == '__main__':
 
     # TODO:
     # - nazewnictwo danych
-    # - magic numbers
     # - dodanie komentarzy (najdłuzszy dystans pierwszy, dystanse zaczynają się od TRASA)
 
     # - dodanie stref
@@ -18,3 +17,4 @@ if __name__ == '__main__':
 
     # - docstrings
     # - usuwanie wierszy/kolumn?
+    # - testowanie (inne mapy)
