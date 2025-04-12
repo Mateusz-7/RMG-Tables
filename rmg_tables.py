@@ -8,8 +8,6 @@ if __name__ == '__main__':
     app.mainloop()
 
     # TODO:
-    # - danie kidsów na koniec listy (rozdzielenie?)
-    # - optymalizacja/poprawa numerowania
     # - nazewnictwo danych
     # - dodanie komentarzy (najdłuzszy dystans pierwszy, dystanse zaczynają się od TRASA)
 

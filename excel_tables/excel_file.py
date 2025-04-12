@@ -1,11 +1,13 @@
+import os
 import os.path
+import sys
 import tkinter as tk
 from abc import ABC
 from tkinter import filedialog
 from typing import Tuple, Optional
-import sys, os
 
 import openpyxl as xl
+from openpyxl.utils import get_column_letter
 from openpyxl.workbook.workbook import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 
@@ -31,7 +33,7 @@ class ExcelFile(ABC):
         else:
             return None, None
 
-    def save_file(self, new_file_name: str = None) -> str | None:
+    def save_file(self, new_file_name: str = None) -> Optional[str]:
         print("Saving file:", self.file_name)
         if self.wb is None:
             raise ValueError("Workbook is not initialized")
@@ -57,16 +59,24 @@ class ExcelFile(ABC):
             print("File name not provided")
             return None
 
-    # # Used in previous version
-    # def change_print_area(self, print_area: List[str]) -> None:
-    #     if self.ws is None:
-    #         raise ValueError("Worksheet is not initialized")
-    #
-    #     print_area = print_area if print_area else self.ws.print_area
-    #     self.ws.print_area = print_area
+    def _write_cell(self, col: int, row: int, value) -> None:
+        self.ws[f"{get_column_letter(col)}{row}"] = value
 
+    def _get_cell_value(self, col: int, row: int) -> str:
+        return self.ws[f"{get_column_letter(col)}{row}"].value
+
+    def _group_rows(self, start_row: int, end_row: int, hidden: bool = False) -> None:
+        self.ws.row_dimensions.group(start_row, end_row, hidden=hidden)
+
+    def _group_columns(self, start_col: int, end_col: int, hidden: bool = False) -> None:
+        self.ws.column_dimensions.group(get_column_letter(start_col), get_column_letter(end_col), hidden=hidden)
+
+    def _bold_cell(self, col: int, row: int) -> None:
+        self.ws[f"{get_column_letter(col)}{row}"].font = xl.styles.Font(bold=True, name="Calibri")
+
+# For later use
 def resource_path(relative_path):
     if hasattr(sys, '_MEIPASS'):
         return os.path.join(sys._MEIPASS, relative_path)
     return os.path.join(os.path.abspath("."), relative_path)
-    # resource_path()
+    # usage: resource_path()
