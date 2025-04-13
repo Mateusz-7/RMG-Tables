@@ -28,7 +28,7 @@ class ExcelFile(ABC):
                 print("File opened successfully: ", file_name)
                 return wb, ws
             except Exception as e:
-                print(f"Error opening file {file_name}: {e}")
+                print(f"*Error opening file {file_name}: {e}")
                 return None, None
         else:
             return None, None
@@ -54,7 +54,7 @@ class ExcelFile(ABC):
                 print("File saved successfully: ", new_file_name)
                 return new_file_name
             except Exception as e:
-                print(f"Error saving file {new_file_name}: {e}")
+                print(f"*Error saving file {new_file_name}: {e}")
         else:
             print("File name not provided")
             return None

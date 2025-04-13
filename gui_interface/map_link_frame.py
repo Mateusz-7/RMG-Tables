@@ -21,7 +21,7 @@ class MapLinkFrame(tk.Frame):
             bg="#232323",
             fg="#ffde00"
         )
-        label.pack(pady=(0, 60))
+        label.pack(pady=(80, 50))
 
         self.entry = tk.Entry(content_frame, width=70, font=("Arial", 10))
         self.entry.pack(pady=10)
@@ -43,7 +43,17 @@ class MapLinkFrame(tk.Frame):
             width=10,
             command=self.submit_link
         )
-        submit_button.pack(pady=10)
+        submit_button.pack(pady=(10, 80))
+
+        disclaimer_label = tk.Label(
+            content_frame,
+            text='- Wszystkie nazwy dystansów muszą zaczynać się od "TRASA"\n'
+                 '- Warstwa najdłuższego dystansu musi być przed pozostałymi dystansami',
+            font=("Runmageddon", 10),
+            bg="#232323",
+            fg="#ffffff"
+        )
+        disclaimer_label.pack()
 
     def submit_link(self):
         map_link = self.entry.get()

@@ -39,6 +39,7 @@ class ErrorWindow(tk.Toplevel):
         ok_button.pack(pady=20)
 
         self.bind("<Return>", lambda event: self.destroy())
+        self.bind("<Escape>", lambda event: self.destroy())
         self.focus_set()
         self.grab_set()
         self.transient(parent)

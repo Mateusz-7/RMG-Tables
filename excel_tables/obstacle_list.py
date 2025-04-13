@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Tuple
 
 from openpyxl.utils import get_column_letter
 
@@ -45,12 +45,33 @@ class ObstacleList(ExcelFile):
 
         # self.ws["V" + str(cell_line)] = # Responsible person
 
-        if obstacle.data is None:
+        data = self._get_obstacle_data(obstacle)
+        if data is None:
             return
-        self._write_cell(COLUMN_WOLO, obstacle_row, int(obstacle.data.get("WOLO", "")) if int(obstacle.data.get("WOLO", 0)) > 0 else "")
-        self._write_cell(COLUMN_JUDGE, obstacle_row, int(obstacle.data.get("SĘDZIA", "")) if int(obstacle.data.get("SĘDZIA", 0)) > 0 else "")
-        self._write_cell(COLUMN_INFO, obstacle_row, obstacle.data.get("OPIS", ""))
-        # TODO: Make sure of the data naming
+
+        wolo, judge, description = data
+        self._write_cell(COLUMN_WOLO, obstacle_row, wolo if wolo > 0 else None)
+        self._write_cell(COLUMN_JUDGE, obstacle_row, judge if judge > 0 else None)
+        self._write_cell(COLUMN_INFO, obstacle_row, description)
+
+    def _get_obstacle_data(self, obstacle: Place) -> Optional[Tuple[int, int, str]]:
+        if obstacle.data is None:
+            return None
+        normalized_data = {key[0].upper(): value for key, value in obstacle.data.items()}
+
+        wolo = self._get_person_number(normalized_data, "W")  # WOLO
+        judge = self._get_person_number(normalized_data, "S")  # SĘDZIA
+        description = normalized_data.get("O", "")  # OPIS
+        return wolo, judge, description
+
+    @staticmethod
+    def _get_person_number(data: dict, data_key: str) -> int:
+        try:
+            return int(data.get(data_key, 0))
+        except ValueError:
+            # TODO: info?
+            print(f"*Invalid data type for {data_key}: {type(data.get(data_key, 0))}")
+            return 0
 
     def _write_course_info(self, course: Layer):
         row_offset = self.course_map.get_course_obstacles_number(self.course_map.courses_list[0]) + ROW_OBSTACLES_OFFSET + 2 if "KIDS" in course.name.upper() else ROW_OBSTACLES_OFFSET
@@ -121,7 +142,7 @@ class ObstacleList(ExcelFile):
             kids_obstacle_row_offset,
         )
         if found_obstacle_index is None:
-            print(f"Unable to find obstacle: {analysed_obstacle.name} from course: {course.name}")
+            print(f"*Unable to find obstacle: {analysed_obstacle.name} from course: {course.name}")
             # TODO: Show on the Final Frame or Error Window
 
         return last_found_obstacle_index

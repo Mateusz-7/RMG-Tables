@@ -8,9 +8,6 @@ if __name__ == '__main__':
     app.mainloop()
 
     # TODO:
-    # - nazewnictwo danych
-    # - dodanie komentarzy (najdłuzszy dystans pierwszy, dystanse zaczynają się od TRASA)
-
     # - dodanie stref
     # - dodanie kilometrów
     # - dodanie odpowiedzialnej osoby

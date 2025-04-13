@@ -72,7 +72,7 @@ class MainApp(tk.Tk):
 
 
     def failed_to_load_map(self, error_message: str):
-        print(f"Failed to load map: {error_message}")
+        print(f"*Failed to load map: {error_message}")
         ErrorWindow(self, error_message)
         self.reopen_map_frame()
 
