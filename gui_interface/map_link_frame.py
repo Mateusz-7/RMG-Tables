@@ -29,7 +29,7 @@ class MapLinkFrame(tk.Frame):
         self.entry.focus_set()
 
         # TODO: Delete after testing
-        self.entry.insert(0, "https://www.google.com/maps/d/u/0/edit?mid=1QU5ydDpF5bg_8jfQca3An2qJfqddpcY&ll=53.08931730768191%2C21.56582239999997&z=15")
+        # self.entry.insert(0, "https://www.google.com/maps/d/u/0/edit?mid=1QU5ydDpF5bg_8jfQca3An2qJfqddpcY&ll=53.08931730768191%2C21.56582239999997&z=15")
 
         submit_button = tk.Button(
             content_frame,
@@ -47,8 +47,8 @@ class MapLinkFrame(tk.Frame):
 
         disclaimer_label = tk.Label(
             content_frame,
-            text='- Wszystkie nazwy dystansów muszą zaczynać się od "TRASA"\n'
-                 '- Warstwa najdłuższego dystansu musi być przed pozostałymi dystansami',
+            text='Wszystkie nazwy dystansów muszą zaczynać się od "TRASA"\n'
+                 'Warstwa najdłuższego dystansu musi być przed pozostałymi dystansami',
             font=("Runmageddon", 10),
             bg="#232323",
             fg="#ffffff"

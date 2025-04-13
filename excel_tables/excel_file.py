@@ -1,6 +1,5 @@
 import os
 import os.path
-import sys
 import tkinter as tk
 from abc import ABC
 from tkinter import filedialog
@@ -11,12 +10,14 @@ from openpyxl.utils import get_column_letter
 from openpyxl.workbook.workbook import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 
+from excel_tables.utils import resource_path
+
 
 class ExcelFile(ABC):
     def __init__(self, file_path: str, worksheet_number: int = 0):
-        self.file_path = file_path
+        self.file_path = resource_path(file_path)
         self.file_name = os.path.basename(file_path)
-        self.wb, self.ws = ExcelFile.open_file(file_path, worksheet_number)
+        self.wb, self.ws = ExcelFile.open_file(self.file_path, worksheet_number)
 
     @staticmethod
     def open_file(file_name: str, worksheet_number: int = 0) -> Tuple[Optional[Workbook], Optional[Worksheet]]:
@@ -73,10 +74,3 @@ class ExcelFile(ABC):
 
     def _bold_cell(self, col: int, row: int) -> None:
         self.ws[f"{get_column_letter(col)}{row}"].font = xl.styles.Font(bold=True, name="Calibri")
-
-# For later use
-def resource_path(relative_path):
-    if hasattr(sys, '_MEIPASS'):
-        return os.path.join(sys._MEIPASS, relative_path)
-    return os.path.join(os.path.abspath("."), relative_path)
-    # usage: resource_path()

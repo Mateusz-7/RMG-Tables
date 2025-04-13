@@ -1,6 +1,7 @@
 import tkinter as tk
 import threading
 from GoogleMyMaps import GoogleMyMaps
+from excel_tables.utils import resource_path
 from .error_window import ErrorWindow
 from .final_frame import FinalFrame
 
@@ -13,7 +14,7 @@ class MainApp(tk.Tk):
         print("Initializing application...")
         super().__init__()
         self.title("RMG - Robot Mateusza Grzech")
-        self.iconbitmap("robot.ico")
+        self.iconbitmap(resource_path("robot.ico"))
         self.geometry("600x400")
         self.center_window(600, 400)
 
