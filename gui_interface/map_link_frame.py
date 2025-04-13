@@ -47,7 +47,8 @@ class MapLinkFrame(tk.Frame):
 
         disclaimer_label = tk.Label(
             content_frame,
-            text='Wszystkie nazwy dystansów muszą zaczynać się od "TRASA"\n'
+            text='Mapa musi być udostępniona/widoczna poprzez link\n'
+                 'Wszystkie nazwy dystansów muszą zaczynać się od "TRASA"\n'
                  'Warstwa najdłuższego dystansu musi być przed pozostałymi dystansami',
             font=("Runmageddon", 10),
             bg="#232323",
