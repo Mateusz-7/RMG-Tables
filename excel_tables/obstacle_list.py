@@ -3,6 +3,7 @@ from typing import Optional, Tuple
 from openpyxl.utils import get_column_letter
 
 from GoogleMyMaps.models import *
+from .areas import Areas
 from .courses import Courses
 from .excel_file import ExcelFile
 
@@ -13,7 +14,7 @@ class ObstacleList(ExcelFile):
     COLUMN_NAME = 19
     COLUMN_WOLO = 20
     COLUMN_JUDGE = 21
-    # COLUMN_ODPOWIEDZIALNY? = 22
+    # COLUMN_WORKER = 22
     COLUMN_INFO = 24
     ROW_HEADERS = 1
     ROW_OBSTACLES_OFFSET = 2
@@ -26,6 +27,7 @@ class ObstacleList(ExcelFile):
         super().__init__(self.file_path)
         self.google_map = google_map
         self.courses = Courses(google_map)
+        self.areas = Areas(google_map)
 
     def _write_headlines(self):
         for course in self.courses.courses_list:
@@ -34,9 +36,9 @@ class ObstacleList(ExcelFile):
     def _get_course_column_number(self, course: Layer) -> int:
         return self.courses.get_course_index(course) * 3 + 1
 
-    def _write_obstacle_number_area_km(self, course_column: int, obstacle_row: int, obstacle_number: int):
+    def _write_obstacle_number_area_km(self, course_column: int, obstacle_row: int, obstacle_number: int, obstacle_area: int):
         self._write_cell(course_column, obstacle_row, obstacle_number)
-        # self.ws[get_column_letter(numbers_column_number + 1) + str(cell_line)] = # Area number
+        self._write_cell(course_column + 1, obstacle_row, obstacle_area)
         # self.ws[get_column_letter(numbers_column_number + 2) + str(cell_line)] = # KM number
 
     def _write_obstacle_name_data(self, obstacle: Place, obstacle_row: int):
@@ -90,7 +92,8 @@ class ObstacleList(ExcelFile):
             print("?Obstacle without number: ", obstacle.name, obstacle.icon)
             return
         obstacle_row = obstacle_number + row_offset
-        self._write_obstacle_number_area_km(course_column, obstacle_row, obstacle_number)
+        obstacle_area_number = self.areas.get_obstacle_area_number(obstacle)
+        self._write_obstacle_number_area_km(course_column, obstacle_row, obstacle_number, obstacle_area_number)
         self._write_obstacle_name_data(obstacle, obstacle_row)
 
     def _write_obstacles_numbers(self, course: Layer):
@@ -163,7 +166,8 @@ class ObstacleList(ExcelFile):
                     continue
 
                 analysed_obstacle_number = self.courses.get_obstacle_number(analysed_obstacle)
-                self._write_obstacle_number_area_km(course_column, obstacle_row, analysed_obstacle_number)
+                obstacle_area_number = self.areas.get_obstacle_area_number(obstacle)
+                self._write_obstacle_number_area_km(course_column, obstacle_row, analysed_obstacle_number, obstacle_area_number)
 
                 return obstacles.index(obstacle)
         return None
