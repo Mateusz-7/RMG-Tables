@@ -33,11 +33,22 @@ class FinalFrame(tk.Frame):
             activebackground="#232323",
             bd=5,
             width=15,
-            command=self.open_file
+            command=self.open_file,
+            cursor="hand2"
         )
         self.open_button.pack(pady=10)
 
-    def open_file(self):
+        self.open_button.bind("<Enter>", self.on_enter)
+        self.open_button.bind("<Leave>", self.on_leave)
+
+    def on_enter(self, event):
+        self.open_button.config(bg="#ffde00", fg="#565656")
+
+    def on_leave(self, event):
+        self.open_button.config(bg="#ffde00", fg="#000000")
+
+    # noinspection PyUnusedLocal
+    def open_file(self, event=None):
         obstacle_list_file = self.controller.obstacle_list_file
         if obstacle_list_file:
             print("Opening file: ", obstacle_list_file)
@@ -45,5 +56,5 @@ class FinalFrame(tk.Frame):
             self.controller.quit_app()
 
     def bind_open_button(self):
-        self.bind("<Return>", lambda event: self.open_file())
+        self.bind("<Return>", self.open_file)
         self.focus_set()

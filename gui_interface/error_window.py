@@ -1,5 +1,6 @@
 import tkinter as tk
 
+
 class ErrorWindow(tk.Toplevel):
     def __init__(self, parent, error_message):
         super().__init__(parent)
@@ -20,29 +21,41 @@ class ErrorWindow(tk.Toplevel):
         error_message_label = tk.Label(
             error_frame,
             text=error_message,
-            font=("Arial", 12),
+            font=tk.font.Font(size=12),
             bg="#cc0033",
             wraplength=300
         )
         error_message_label.pack()
 
-        ok_button = tk.Button(
+        self.ok_button = tk.Button(
             error_frame,
             text="OK",
             font=("Runmageddon", 20),
             width=10,
-            bg="#000000",
-            fg="#ffffff",
+            bg="#ffde00",
+            fg="#000000",
+            activeforeground="#ffde00",
+            activebackground="#cc0033",
             bd=4,
-            command=self.destroy
+            command=self.destroy,
+            cursor="hand2"
         )
-        ok_button.pack(pady=20)
+        self.ok_button.pack(pady=20)
 
         self.bind("<Return>", lambda event: self.destroy())
         self.bind("<Escape>", lambda event: self.destroy())
         self.focus_set()
         self.grab_set()
         self.transient(parent)
+
+        self.ok_button.bind("<Enter>", self.on_enter)
+        self.ok_button.bind("<Leave>", self.on_leave)
+
+    def on_enter(self, event):
+        self.ok_button.config(bg="#ffde00", fg="#cc0033")
+
+    def on_leave(self, event):
+        self.ok_button.config(bg="#ffde00", fg="#000000")
 
     def center_window_on_parent(self, parent, width, height):
         x = parent.winfo_x() + (parent.winfo_width() - width) // 2

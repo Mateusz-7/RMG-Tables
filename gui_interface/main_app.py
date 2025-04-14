@@ -9,12 +9,13 @@ from .map_link_frame import MapLinkFrame
 from .loading_frame import LoadingFrame
 from excel_tables.obstacle_list import ObstacleList
 
+
 class MainApp(tk.Tk):
     def __init__(self):
         print("Initializing application...")
         super().__init__()
         self.title("RMG - Robot Mateusza Grzech")
-        self.iconbitmap(resource_path("robot.ico"))
+        self.iconbitmap(resource_path("gui_interface/robot.ico"))
         self.geometry("600x400")
         self.center_window(600, 400)
 
@@ -70,7 +71,6 @@ class MainApp(tk.Tk):
             self.frames["MapLinkFrame"].unbind_submit_button()
             self.frames["FinalFrame"].bind_open_button()
             self.show_frame("FinalFrame")
-
 
     def failed_to_load_map(self, error_message: str):
         print(f"*Failed to load map: {error_message}")

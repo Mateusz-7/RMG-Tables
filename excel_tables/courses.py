@@ -27,9 +27,11 @@ class Courses:
                 return int(match.group(1))
         return None
 
-    def get_course_obstacles_number(self, course: Layer) -> int:
+    @staticmethod
+    def get_course_obstacles_number(course: Layer) -> int:
         for obstacle in reversed(course.places):
-            number = self.get_obstacle_number(obstacle)
+            # number = self.get_obstacle_number(obstacle)
+            number = Courses.get_obstacle_number(obstacle)
             if number is not None:
                 return number
         return 0

@@ -1,4 +1,3 @@
 pyinstaller --onefile --add-data "WZORY;WZORY" --add-data "robot.ico;robot.ico" --icon=robot.ico rmg_tables.py
 
 --windowed to hide cmd
-
