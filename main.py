@@ -9,9 +9,10 @@ if __name__ == '__main__':
     main()
 
     # TODO:
+    # - dodanie stref
+    # - lista nie znalezionych przeszkód
     # - logging
 
-    # - dodanie stref
     # - dodanie kilometrów
     # - dodanie odpowiedzialnej osoby
 

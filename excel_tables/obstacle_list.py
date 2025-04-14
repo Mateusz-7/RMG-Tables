@@ -41,7 +41,7 @@ class ObstacleList(ExcelFile):
 
     def _write_obstacle_name_data(self, obstacle: Place, obstacle_row: int):
         self._write_cell(self.COLUMN_NAME, obstacle_row, obstacle.name)
-        if obstacle.name in self.IMPORTANT_OBSTACLE_NAMES:
+        if obstacle.name.upper() in self.IMPORTANT_OBSTACLE_NAMES:
             self._bold_cell(self.COLUMN_NAME, obstacle_row)
 
         # self.ws["V" + str(cell_line)] = # Responsible person
@@ -86,6 +86,9 @@ class ObstacleList(ExcelFile):
     def _write_single_obstacle_info(self, course: Layer, obstacle: Place, row_offset: int):
         course_column = self._get_course_column_number(course)
         obstacle_number = self.courses.get_obstacle_number(obstacle)
+        if obstacle_number is None:
+            print("?Obstacle without number: ", obstacle.name, obstacle.icon)
+            return
         obstacle_row = obstacle_number + row_offset
         self._write_obstacle_number_area_km(course_column, obstacle_row, obstacle_number)
         self._write_obstacle_name_data(obstacle, obstacle_row)
@@ -125,7 +128,7 @@ class ObstacleList(ExcelFile):
             obstacle_row_offset,
         )
         if found_obstacle_index is not None:
-            return found_obstacle_index
+            return last_found_obstacle_index + found_obstacle_index + 1
 
         found_obstacle_index = self._find_and_write_obstacle(
             analysed_obstacle,
@@ -134,7 +137,7 @@ class ObstacleList(ExcelFile):
             obstacle_row_offset,
         )
         if found_obstacle_index is not None:
-            return found_obstacle_index
+            return last_found_obstacle_index + found_obstacle_index + 1
 
         found_obstacle_index = self._find_and_write_obstacle(
             analysed_obstacle,
@@ -143,22 +146,26 @@ class ObstacleList(ExcelFile):
             kids_obstacle_row_offset,
         )
         if found_obstacle_index is None:
-            print(f"*Unable to find obstacle: {analysed_obstacle.name} from course: {course.name}")
+            print(f"-Unable to find obstacle: {analysed_obstacle.name} from course: {course.name}")
             # TODO: Show on the Final Frame or Error Window
 
         return last_found_obstacle_index
 
     def _find_and_write_obstacle(self, analysed_obstacle: Place, obstacles, course_column: int, row_offset: int) -> Optional[int]:
         for obstacle in obstacles:
-            if analysed_obstacle.name == obstacle.name:
-                obstacle_row = self.courses.get_obstacle_number(obstacle) + row_offset
+            if analysed_obstacle.name.upper().strip("\n").strip() == obstacle.name.upper().strip("\n").strip():
+                obstacle_number = self.courses.get_obstacle_number(obstacle)
+                if obstacle_number is None:
+                    print("?Obstacle without number: ", obstacle.name, obstacle.icon)
+                    return
+                obstacle_row = obstacle_number + row_offset
                 if self._get_cell_value(course_column, obstacle_row) is not None:
                     continue
 
                 analysed_obstacle_number = self.courses.get_obstacle_number(analysed_obstacle)
                 self._write_obstacle_number_area_km(course_column, obstacle_row, analysed_obstacle_number)
 
-                return self.courses.get_obstacle_number(obstacle)
+                return obstacles.index(obstacle)
         return None
 
     def _sum_and_write_number_of_volunteers_and_judges(self):

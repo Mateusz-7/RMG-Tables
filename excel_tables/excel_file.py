@@ -71,7 +71,8 @@ class ExcelFile(ABC):
         self.ws.row_dimensions.group(start_row, end_row, hidden=hidden)
 
     def _group_columns(self, start_col: int, end_col: int, hidden: bool = False) -> None:
-        self.ws.column_dimensions.group(get_column_letter(start_col), get_column_letter(end_col), hidden=hidden)
+        if start_col <= end_col:
+            self.ws.column_dimensions.group(get_column_letter(start_col), get_column_letter(end_col), hidden=hidden)
 
     def _bold_cell(self, col: int, row: int) -> None:
         self.ws[f"{get_column_letter(col)}{row}"].font = xl.styles.Font(bold=True, name="Calibri")
