@@ -22,12 +22,12 @@ jobs:
           --add-data "gui_interface/robot.ico;gui_interface/robot.ico" ^
           --icon=gui_interface/robot.ico ^
           --windowed ^
-          -n "GeneratorListyPrzeszkód" ^
+          -n "GeneratorListyPrzeszkod" ^
           main.py
     - uses: actions/upload-artifact@v4
       with:
         name: windows-app
-        path: dist/GeneratorListyPrzeszkód.exe
+        path: dist/GeneratorListyPrzeszkod.exe
 
   build-macos:
     runs-on: macos-latest
@@ -44,7 +44,7 @@ jobs:
           --add-data "gui_interface/robot.icns:gui_interface/robot.icns" \
           --icon=gui_interface/robot.icns \
           --windowed \
-          --name "GeneratorListyPrzeszkód" \
+          --name "GeneratorListyPrzeszkod" \
           main.py
     - name: Rename .app for artifact upload
       run: |
