@@ -24,7 +24,7 @@ jobs:
           --windowed ^
           -n "GeneratorListyPrzeszkód" ^
           main.py
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: windows-app
         path: dist/GeneratorListyPrzeszkód.exe
@@ -49,7 +49,7 @@ jobs:
     - name: Rename .app for artifact upload
       run: |
         mv dist/Generator\ Listy\ Przeszkód.app dist/Generator_Listy_Przeszkod.app
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: macos-app
         path: dist/GeneratorListyPrzeszkod.app
