@@ -56,7 +56,7 @@ class FinalFrame(tk.Frame):
         obstacle_list_file = self.controller.obstacle_list_file
         if obstacle_list_file:
             start_application(obstacle_list_file)
-            self.controller.quit_app()
+            self.controller.destroy()
 
     def bind_open_button(self):
         self.bind("<Return>", self.open_file)  # Add binding for main Enter key

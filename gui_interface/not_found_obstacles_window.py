@@ -6,7 +6,7 @@ from GoogleMyMaps.models import Place
 from excel_tables.obstacle_list import not_found_obstacles
 
 
-class NotFoundObstaclesWindow(tk.Toplevel):
+class NotFoundObstaclesWindow(tk.Tk):
     """Window displaying obstacles that couldn't be found"""
 
     def __init__(self, parent):
@@ -56,12 +56,11 @@ class NotFoundObstaclesWindow(tk.Toplevel):
             self.tree.insert("", tk.END, values=(obstacle.name, course_name))
 
 
-def show_not_found_obstacles(parent):
+def show_not_found_obstacles():
     """Show window with obstacles that couldn't be found"""
     if not not_found_obstacles:
         return
 
-    window = NotFoundObstaclesWindow(parent)
+    window = NotFoundObstaclesWindow(None)
     window.focus_set()
-    window.grab_set()  # Make window modal
     return window

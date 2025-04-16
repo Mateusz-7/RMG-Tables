@@ -74,10 +74,10 @@ class MainApp(tk.Tk):
 
     def process_map(self):
         log.info("Map loaded successfully")
-        file_path, not_found_obstacles = ObstacleList.create_and_save(self.google_map)
+        self.obstacle_list_file, not_found_obstacles = ObstacleList.create_and_save(self.google_map)
         if not_found_obstacles:
-            show_not_found_obstacles(self)
-        if file_path is None:
+            show_not_found_obstacles()
+        if self.obstacle_list_file is None:
             self.reopen_map_frame()
         else:
             self.frames["MapLinkFrame"].unbind_submit_button()
