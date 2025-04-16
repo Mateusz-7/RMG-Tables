@@ -17,15 +17,9 @@ class MainApp(tk.Tk):
         super().__init__()
         self.title("RMG - Robot Mateusza Grzech")
 
-        # Cross-platform icon handling
         try:
-            if platform.system() == "Windows":
-                # For Windows
-                self.iconbitmap(resource_path("gui_interface/icon.ico"))
-            else:
-                # For Linux and macOS
-                icon_image = tk.PhotoImage(file=resource_path("gui_interface/icon.png"))
-                self.iconphoto(True, icon_image)
+            icon_image = tk.PhotoImage(file=resource_path("gui_interface/icon.png"))
+            self.iconphoto(True, icon_image)
         except Exception as e:
             print(f"Could not set application icon: {e}")
 
