@@ -24,7 +24,6 @@ class NotFoundObstaclesWindow(tk.Tk):
         text_color = "#e0e0e0"   # Light gray text
         button_bg = "#ffde00"    # Yellow for buttons (matching MapLinkFrame)
         button_fg = "#000000"    # Black text for buttons
-        button_active_fg = "#565656"  # Gray text for active buttons
         
         # Set window background color
         self.configure(bg=bg_color)
@@ -163,17 +162,13 @@ class NotFoundObstaclesWindow(tk.Tk):
             width=15,
             bg=button_bg,
             fg=button_fg,
-            activeforeground=button_bg, # button_active_fg
+            activeforeground=button_bg,
             activebackground=bg_color,
             bd=3,
             font=default_font,
             cursor="hand2"
         )
         close_button.pack(side=tk.RIGHT)
-        
-        # Add hover effects to button
-        close_button.bind("<Enter>", lambda e: close_button.config(fg=button_bg))
-        close_button.bind("<Leave>", lambda e: close_button.config(fg=button_fg))
 
     def on_tree_hover(self, event):
         """Handle hover effect on treeview"""
