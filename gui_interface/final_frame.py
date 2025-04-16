@@ -1,4 +1,5 @@
 import os
+import platform
 import tkinter as tk
 
 
@@ -52,7 +53,14 @@ class FinalFrame(tk.Frame):
         obstacle_list_file = self.controller.obstacle_list_file
         if obstacle_list_file:
             print("Opening file: ", obstacle_list_file)
-            os.startfile(obstacle_list_file)
+            if platform.system() == "Windows":
+                os.startfile(obstacle_list_file)
+            elif platform.system() == "Darwin":
+                os.system("open '" + obstacle_list_file + "'")
+            elif platform.system() == "Linux":
+                os.system("xdg-open '" + obstacle_list_file + "'")
+            else:
+                print("Unsupported operating system")
             self.controller.quit_app()
 
     def bind_open_button(self):
