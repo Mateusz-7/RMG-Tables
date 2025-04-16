@@ -77,6 +77,8 @@ class MapLinkFrame(tk.Frame):
 
     def bind_submit_button(self):
         self.entry.bind("<Return>", lambda event: self.submit_link())
+        self.entry.bind("<KP_Enter>", lambda event: self.submit_link())
 
     def unbind_submit_button(self):
         self.entry.unbind("<Return>")
+        self.entry.unbind("<KP_Enter>")

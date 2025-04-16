@@ -64,5 +64,6 @@ class FinalFrame(tk.Frame):
             self.controller.quit_app()
 
     def bind_open_button(self):
-        self.bind("<Return>", self.open_file)
+        self.bind("<Return>", self.open_file) # Add binding for main Enter key
+        self.bind("<KP_Enter>", self.open_file)  # Add binding for numeric keypad Enter
         self.focus_set()

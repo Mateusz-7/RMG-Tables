@@ -42,7 +42,8 @@ class ErrorWindow(tk.Toplevel):
         )
         self.ok_button.pack(pady=20)
 
-        self.bind("<Return>", lambda event: self.destroy())
+        self.bind("<Return>", lambda event: self.destroy()) # Add binding for main Enter key
+        self.bind("<KP_Enter>", lambda event: self.destroy())  # Add binding for numeric keypad Enter
         self.bind("<Escape>", lambda event: self.destroy())
         self.focus_set()
         self.grab_set()
