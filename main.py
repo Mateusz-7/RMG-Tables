@@ -14,10 +14,9 @@ if __name__ == '__main__':
     main()
 
     # TODO:
-    # - logging
     # - lista nie znalezionych przeszkód
-
     # - dodanie kilometrów
+
     # - dodanie odpowiedzialnej osoby
 
     # - docstrings
