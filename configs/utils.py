@@ -22,3 +22,11 @@ def start_application(file_path: str) -> None:
         os.system("xdg-open '" + file_path + "'")
     else:
         log.error("Unsupported operating system: %s", platform.system())
+
+
+def unify_string(string: str) -> str:
+    """
+    :param string: String to unify
+    :return: String without spaces, new line characters, and with UPPER
+    """
+    return string.upper().replace("\n", "").replace(" ", "")

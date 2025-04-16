@@ -4,6 +4,7 @@ from typing import Optional, Tuple, List
 from openpyxl.utils import get_column_letter
 
 from GoogleMyMaps.models import *
+from configs.utils import unify_string
 from .areas import Areas
 from .course_trail import CourseTrail
 from .courses import Courses
@@ -171,7 +172,7 @@ class ObstacleList(ExcelFile):
     def _find_and_write_obstacle(self, analysed_obstacle: Place, obstacles, course: Layer, row_offset: int) -> \
             Optional[int]:
         for obstacle in obstacles:
-            if analysed_obstacle.name.upper().strip("\n").strip() == obstacle.name.upper().strip("\n").strip():
+            if unify_string(analysed_obstacle.name) == unify_string(obstacle.name):
                 obstacle_number = self.courses.get_obstacle_number(obstacle)
                 if obstacle_number is None:
                     log.warning("Obstacle without number: %s, %s", obstacle.name, obstacle.icon)

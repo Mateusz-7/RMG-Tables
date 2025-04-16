@@ -17,6 +17,3 @@ if __name__ == '__main__':
     # - lista nie znalezionych przeszkód
 
     # - dodanie odpowiedzialnej osoby
-
-    # - docstrings
-    # - usuwanie wierszy/kolumn?
