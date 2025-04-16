@@ -22,4 +22,3 @@ if __name__ == '__main__':
 
     # - docstrings
     # - usuwanie wierszy/kolumn?
-    # - testowanie (inne mapy)
