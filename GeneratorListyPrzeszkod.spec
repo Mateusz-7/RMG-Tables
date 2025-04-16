@@ -5,7 +5,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('WZORY', 'WZORY'), ('gui_interface/robot.ico', 'gui_interface/robot.ico'), ('gui_interface/robot_square.png', 'gui_interface/robot_square.png')],
+    datas=[('WZORY', 'WZORY'), ('gui_interface/robot.ico', 'gui_interface/'), ('gui_interface/robot_square.png', 'gui_interface/')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

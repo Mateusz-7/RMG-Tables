@@ -25,7 +25,7 @@ class MainApp(tk.Tk):
             else:
                 # For Linux and macOS
                 icon_image = tk.PhotoImage(file=resource_path("gui_interface/robot_square.png"))
-                self.iconphoto(False, icon_image)
+                self.iconphoto(True, icon_image)
         except Exception as e:
             print(f"Could not set application icon: {e}")
 
