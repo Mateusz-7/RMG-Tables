@@ -5,6 +5,7 @@ from openpyxl.utils import get_column_letter
 
 from GoogleMyMaps.models import *
 from .areas import Areas
+from .course_trail import CourseTrail
 from .courses import Courses
 from .excel_file import ExcelFile
 
@@ -40,10 +41,12 @@ class ObstacleList(ExcelFile):
         return self.courses.get_course_index(course) * 3 + 1
 
     def _write_obstacle_number_area_km(self, course_column: int, obstacle_row: int, obstacle_number: int,
-                                       obstacle_area: int):
+                                       obstacle_area: int, obstacle_distance: Optional[float]) -> None:
+        if obstacle_distance is not None:
+            obstacle_distance = round(obstacle_distance / 1000, 1)
         self._write_cell(course_column, obstacle_row, obstacle_number)
         self._write_cell(course_column + 1, obstacle_row, obstacle_area)
-        # self.ws[get_column_letter(numbers_column_number + 2) + str(cell_line)] = # KM number
+        self._write_cell(course_column + 2, obstacle_row, obstacle_distance)
 
     def _write_obstacle_name_data(self, obstacle: Place, obstacle_row: int):
         self._write_cell(self.COLUMN_NAME, obstacle_row, obstacle.name)
@@ -98,11 +101,11 @@ class ObstacleList(ExcelFile):
             return
         obstacle_row = obstacle_number + row_offset
         obstacle_area_number = self.areas.get_obstacle_area_number(obstacle)
-        self._write_obstacle_number_area_km(course_column, obstacle_row, obstacle_number, obstacle_area_number)
+        obstacle_distance = CourseTrail(course).get_obstacle_distance(obstacle)
+        self._write_obstacle_number_area_km(course_column, obstacle_row, obstacle_number, obstacle_area_number, obstacle_distance)
         self._write_obstacle_name_data(obstacle, obstacle_row)
 
     def _write_obstacles_numbers(self, course: Layer):
-        course_column = self._get_course_column_number(course)
         obstacle_row_offset = self.ROW_OBSTACLES_OFFSET
         kids_obstacle_row_offset = self.courses.get_course_obstacles_number(
             self.courses.courses_list[0]) + self.ROW_OBSTACLES_OFFSET + 2
@@ -115,7 +118,6 @@ class ObstacleList(ExcelFile):
             last_found_obstacle_index = self._process_obstacle(
                 course,
                 analysed_obstacle,
-                course_column,
                 obstacle_row_offset,
                 kids_obstacle_row_offset,
                 last_found_obstacle_index
@@ -125,7 +127,6 @@ class ObstacleList(ExcelFile):
             self,
             course: Layer,
             analysed_obstacle: Place,
-            course_column: int,
             obstacle_row_offset: int,
             kids_obstacle_row_offset: int,
             last_found_obstacle_index: int
@@ -133,7 +134,7 @@ class ObstacleList(ExcelFile):
         found_obstacle_index = self._find_and_write_obstacle(
             analysed_obstacle,
             self.courses.courses_list[0].places[last_found_obstacle_index + 1:],
-            course_column,
+            course,
             obstacle_row_offset,
         )
         if found_obstacle_index is not None:
@@ -142,7 +143,7 @@ class ObstacleList(ExcelFile):
         found_obstacle_index = self._find_and_write_obstacle(
             analysed_obstacle,
             self.courses.courses_list[0].places[last_found_obstacle_index + 1::-1],
-            course_column,
+            course,
             obstacle_row_offset,
         )
         if found_obstacle_index is not None:
@@ -151,7 +152,7 @@ class ObstacleList(ExcelFile):
         found_obstacle_index = self._find_and_write_obstacle(
             analysed_obstacle,
             self.courses.courses_list[-1].places,
-            course_column,
+            course,
             kids_obstacle_row_offset,
         )
         if found_obstacle_index is None:
@@ -160,7 +161,7 @@ class ObstacleList(ExcelFile):
 
         return last_found_obstacle_index
 
-    def _find_and_write_obstacle(self, analysed_obstacle: Place, obstacles, course_column: int, row_offset: int) -> \
+    def _find_and_write_obstacle(self, analysed_obstacle: Place, obstacles, course: Layer, row_offset: int) -> \
             Optional[int]:
         for obstacle in obstacles:
             if analysed_obstacle.name.upper().strip("\n").strip() == obstacle.name.upper().strip("\n").strip():
@@ -169,13 +170,15 @@ class ObstacleList(ExcelFile):
                     log.warning("Obstacle without number: %s, %s", obstacle.name, obstacle.icon)
                     return
                 obstacle_row = obstacle_number + row_offset
+                course_column = self._get_course_column_number(course)
                 if self._get_cell_value(course_column, obstacle_row) is not None:
                     continue
 
                 analysed_obstacle_number = self.courses.get_obstacle_number(analysed_obstacle)
                 obstacle_area_number = self.areas.get_obstacle_area_number(obstacle)
+                obstacle_distance = CourseTrail(course).get_obstacle_distance(obstacle)
                 self._write_obstacle_number_area_km(course_column, obstacle_row, analysed_obstacle_number,
-                                                    obstacle_area_number)
+                                                    obstacle_area_number, obstacle_distance)
 
                 return obstacles.index(obstacle)
         return None
