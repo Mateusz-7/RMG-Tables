@@ -29,12 +29,6 @@ class NotFoundObstaclesWindow(tk.Tk):
         # Set window background color
         self.configure(bg=bg_color)
         
-        # Set window icon if available
-        try:
-            self.iconbitmap("assets/icon.ico")  # Replace with your icon path if available
-        except:
-            pass
-        
         # Configure fonts
         default_font = font.nametofont("TkDefaultFont")
         default_font.configure(size=10)
