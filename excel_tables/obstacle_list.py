@@ -34,7 +34,7 @@ class ObstacleList(ExcelFile):
         file_path (str): Path to the template Excel file.
         not_found_obstacles (List[Tuple[Layer, int, Place]]): List to store obstacles that couldn't be found.
     """
-    
+
     IMPORTANT_OBSTACLE_NAMES = ["START", "META", "START KIDS", "META KIDS"]
     COLUMN_LAST_COURSE = 18
     COLUMN_NAME = 19
@@ -45,6 +45,7 @@ class ObstacleList(ExcelFile):
     ROW_HEADERS = 1
     ROW_OBSTACLES_OFFSET = 2
     ROW_MAX = 200
+    ROW_KIDS_SPACING = 1
 
     file_name = "LISTA PRZESZKÓD"
     file_path = f"WZORY/{file_name}.xlsx"
@@ -173,7 +174,7 @@ class ObstacleList(ExcelFile):
             course (Layer): The course layer containing obstacles to write.
         """
         row_offset = self.courses.get_course_obstacles_number(self.courses.courses_list[
-                                                                  0]) + self.ROW_OBSTACLES_OFFSET + 2 if "KIDS" in course.name.upper() else self.ROW_OBSTACLES_OFFSET
+                                                                  0]) + self.ROW_OBSTACLES_OFFSET + self.ROW_KIDS_SPACING if "KIDS" in course.name.upper() else self.ROW_OBSTACLES_OFFSET
 
         for obstacle in course.places:
             if obstacle.place_type != "Point":
@@ -198,7 +199,8 @@ class ObstacleList(ExcelFile):
         obstacle_row = obstacle_number + row_offset
         obstacle_area_number = self.areas.get_obstacle_area_number(obstacle)
         obstacle_distance = CourseTrail(course).get_obstacle_distance(obstacle)
-        self._write_obstacle_number_area_km(course_column, obstacle_row, obstacle_number, obstacle_area_number, obstacle_distance)
+        self._write_obstacle_number_area_km(course_column, obstacle_row, obstacle_number, obstacle_area_number,
+                                            obstacle_distance)
         self._write_obstacle_name_data(obstacle, obstacle_row)
 
     def _write_obstacles_numbers(self, course: Layer):
@@ -210,7 +212,7 @@ class ObstacleList(ExcelFile):
         """
         obstacle_row_offset = self.ROW_OBSTACLES_OFFSET
         kids_obstacle_row_offset = self.courses.get_course_obstacles_number(
-            self.courses.courses_list[0]) + self.ROW_OBSTACLES_OFFSET + 2
+            self.courses.courses_list[0]) + self.ROW_OBSTACLES_OFFSET + self.ROW_KIDS_SPACING
 
         last_found_obstacle_index = -1
         for analysed_obstacle in course.places:
@@ -342,7 +344,7 @@ class ObstacleList(ExcelFile):
         self._group_rows(
             self.courses.get_course_obstacles_number(self.courses.courses_list[0])
             + self.courses.get_course_obstacles_number(self.courses.courses_list[-1])
-            + self.ROW_OBSTACLES_OFFSET + 2,
+            + self.ROW_OBSTACLES_OFFSET + self.ROW_KIDS_SPACING + 1,
             self.ROW_MAX,
             True
         )

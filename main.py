@@ -3,6 +3,8 @@ import logging
 from configs.logger_config import setup_logger
 from gui_interface.main_app import MainApp
 
+import pyfiglet
+
 
 def main():
     """
@@ -52,6 +54,9 @@ def main():
         - Future enhancements may include command-line arguments for different logging levels
           or other configuration options.
     """
+    result = pyfiglet.figlet_format("RMG", font="ansi_shadow")
+    print(f"\033[94m{result}")
+
     setup_logger(logging.DEBUG)
 
     app = MainApp()
