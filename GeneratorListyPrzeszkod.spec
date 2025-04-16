@@ -5,7 +5,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('WZORY', 'WZORY'), ('gui_interface/robot.ico', 'gui_interface/'), ('gui_interface/robot_square.png', 'gui_interface/')],
+    datas=[('WZORY', 'WZORY'), ('gui_interface/icon.png', 'gui_interface/')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -35,5 +35,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['gui_interface/robot_square.png'],
+    icon=['gui_interface/icon.png'],
 )
