@@ -15,7 +15,6 @@ if __name__ == '__main__':
 
     # TODO:
     # - lista nie znalezionych przeszkód
-    # - dodanie kilometrów
 
     # - dodanie odpowiedzialnej osoby
 
