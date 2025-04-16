@@ -10,7 +10,7 @@ class NotFoundObstaclesWindow(tk.Tk):
     def __init__(self, obstacle_list):
         super().__init__()
         self.obstacle_list = obstacle_list
-        self.title("Nie znalezione przeszkody")
+        self.title("RMG - Robot Mateusza Grzech")
         self.geometry("600x400")
         self.resizable(True, True)
         
