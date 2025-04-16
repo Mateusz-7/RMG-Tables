@@ -1,0 +1,65 @@
+name: Build Apps
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - run: |
+          python3 -m venv venv
+          . venv\Scripts\activate.bat
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+          pyinstaller GeneratorListyPrzeszkod.spec
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-app
+          path: dist/GeneratorListyPrzeszkod.exe
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - run: |
+          python3 -m venv venv
+          . venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+          pyinstaller GeneratorListyPrzeszkod.spec
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos-app
+          path: dist/GeneratorListyPrzeszkod
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - run: |
+          python3 -m venv venv
+          . venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+          pyinstaller GeneratorListyPrzeszkod.spec
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-app
+          path: dist/GeneratorListyPrzeszkod
