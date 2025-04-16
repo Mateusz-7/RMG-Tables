@@ -196,3 +196,5 @@ build/
 WZORY/
 Runmageddon.ttf
 ./*.xlsx
+
+venv/

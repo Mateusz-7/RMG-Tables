@@ -68,7 +68,7 @@ class MapLinkFrame(tk.Frame):
     def on_leave(self, event):
         self.submit_button.config(bg="#ffde00", fg="#000000")
 
-    def submit_link(self):
+    def submit_link(self, event=None):
         map_link = self.entry.get()
         if map_link:
             print("Map link provided:", map_link)
@@ -76,8 +76,8 @@ class MapLinkFrame(tk.Frame):
             self.controller.process_map_link(map_link)
 
     def bind_submit_button(self):
-        self.entry.bind("<Return>", lambda event: self.submit_link())
-        self.entry.bind("<KP_Enter>", lambda event: self.submit_link())
+        self.entry.bind("<Return>", self.submit_link)
+        self.entry.bind("<KP_Enter>", self.submit_link)
 
     def unbind_submit_button(self):
         self.entry.unbind("<Return>")
