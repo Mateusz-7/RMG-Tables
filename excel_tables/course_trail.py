@@ -5,6 +5,7 @@ from typing import Optional
 import numpy as np
 
 from GoogleMyMaps import Layer, Place
+from configs.utils import unify_string
 
 log = logging.getLogger(__name__)
 
@@ -17,8 +18,10 @@ class CourseTrail:
     @staticmethod
     def _get_trail(course) -> Optional[list]:
         for place in course.places:
-            if place.place_type == "Line" and place.name.strip() in course.name.strip():
-                return place.coords
+            if place.place_type == "Line":
+                if (unify_string(place.name) in unify_string(course.name)
+                        or unify_string(place.name) == unify_string(course.name)):
+                    return place.coords
 
     def get_obstacle_distance(self, obstacle: Place) -> Optional[float]:
         """
