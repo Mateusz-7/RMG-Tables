@@ -53,7 +53,7 @@ class MapLinkFrame(tk.Frame):
 
         # TODO: Delete after testing
         # self.entry.insert(0,"https://www.google.com/maps/d/u/0/edit?mid=1QU5ydDpF5bg_8jfQca3An2qJfqddpcY&ll=53.08931730768191%2C21.56582239999997&z=15")
-        self.entry.insert(0, "https://www.google.com/maps/d/u/1/edit?mid=134VUSLwnSE0LorF8FeYLEd3E6EhIYwc&usp=sharing")
+        # self.entry.insert(0, "https://www.google.com/maps/d/u/1/edit?mid=134VUSLwnSE0LorF8FeYLEd3E6EhIYwc&usp=sharing")
 
         self.submit_button = tk.Button(
             content_frame,
