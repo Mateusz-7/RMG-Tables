@@ -1,6 +1,6 @@
-import os
-import platform
 import tkinter as tk
+
+from excel_tables.utils import start_application
 
 
 class FinalFrame(tk.Frame):
@@ -52,15 +52,7 @@ class FinalFrame(tk.Frame):
     def open_file(self, event=None):
         obstacle_list_file = self.controller.obstacle_list_file
         if obstacle_list_file:
-            print("Opening file: ", obstacle_list_file)
-            if platform.system() == "Windows":
-                os.startfile(obstacle_list_file)
-            elif platform.system() == "Darwin":
-                os.system("open '" + obstacle_list_file + "'")
-            elif platform.system() == "Linux":
-                os.system("xdg-open '" + obstacle_list_file + "'")
-            else:
-                print("Unsupported operating system")
+            start_application(obstacle_list_file)
             self.controller.quit_app()
 
     def bind_open_button(self):
