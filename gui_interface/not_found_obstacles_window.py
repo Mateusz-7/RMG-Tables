@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk, font
 
 from excel_tables.obstacle_list import ObstacleList
-from configs.colors import Colors
+from configs.utils import Colors
 
 
 class NotFoundObstaclesWindow(tk.Tk):
@@ -15,16 +15,8 @@ class NotFoundObstaclesWindow(tk.Tk):
         self.geometry("600x400")
         self.resizable(True, True)
 
-        # Configure colors with dark theme - matching MapLinkFrame
-        bg_color = Colors.BG_COLOR.value
-        row_odd = Colors.ROW_ODD.value
-        row_even = Colors.ROW_EVEN.value
-        text_color = Colors.TEXT_COLOR.value
-        scrollbar_bg = Colors.SCROLLBAR_BG.value
-        main_yellow = Colors.MAIN_YELLOW.value
-
         # Set window background color
-        self.configure(bg=bg_color)
+        self.configure(bg=Colors.BG_COLOR)
 
         # Configure fonts
         default_font = font.nametofont("TkDefaultFont")
@@ -32,7 +24,7 @@ class NotFoundObstaclesWindow(tk.Tk):
         title_font = font.Font(family=default_font.cget("family"), size=12, weight="bold")
 
         # Create a main frame
-        main_frame = tk.Frame(self, bg=bg_color, padx=10, pady=10)
+        main_frame = tk.Frame(self, bg=Colors.BG_COLOR, padx=10, pady=10)
         main_frame.pack(fill=tk.BOTH, expand=True)
 
         # Title label
@@ -40,21 +32,21 @@ class NotFoundObstaclesWindow(tk.Tk):
             main_frame,
             text="Lista przeszkód, których nie udało się znaleźć",
             font=title_font,
-            bg=bg_color,
-            fg=main_yellow,
+            bg=Colors.BG_COLOR,
+            fg=Colors.MAIN_YELLOW,
             pady=10
         )
         title_label.pack(fill=tk.X)
 
         # Create a frame for the list
-        frame = tk.Frame(main_frame, bg=bg_color, highlightthickness=0, bd=0)
+        frame = tk.Frame(main_frame, bg=Colors.BG_COLOR, highlightthickness=0, bd=0)
         frame.pack(fill=tk.BOTH, expand=True)
 
         # Create scrollbar with matching colors
         scrollbar = tk.Scrollbar(frame,
-                                 bg=scrollbar_bg,
-                                 troughcolor=row_odd,
-                                 activebackground=main_yellow)
+                                 bg=Colors.MAIN_YELLOW,
+                                 troughcolor=Colors.MAIN_DARKER,
+                                 activebackground=Colors.MAIN_YELLOW)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
         # Create columns
@@ -82,14 +74,14 @@ class NotFoundObstaclesWindow(tk.Tk):
         scrollbar.config(command=self.tree.yview)
 
         # Add alternating row colors with explicit foreground
-        self.tree.tag_configure('odd', background=row_odd, foreground=text_color)
-        self.tree.tag_configure('even', background=row_even, foreground=text_color)
+        self.tree.tag_configure('odd', background=Colors.BG_COLOR, foreground=Colors.TEXT_COLOR)
+        self.tree.tag_configure('even', background=Colors.BG_LIGHTER, foreground=Colors.TEXT_COLOR)
 
         # Add obstacles to the list
         self.populate_tree()
 
         # Create button frame
-        button_frame = tk.Frame(main_frame, bg=bg_color)
+        button_frame = tk.Frame(main_frame, bg=Colors.BG_COLOR)
         button_frame.pack(fill=tk.X, pady=(10, 0))
 
         # Count label
@@ -97,8 +89,8 @@ class NotFoundObstaclesWindow(tk.Tk):
         count_label = tk.Label(
             button_frame,
             text=count_text,
-            bg=bg_color,
-            fg=main_yellow,
+            bg=Colors.BG_COLOR,
+            fg=Colors.MAIN_YELLOW,
             font=default_font
         )
         count_label.pack(side=tk.LEFT, padx=5)

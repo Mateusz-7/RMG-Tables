@@ -32,12 +32,18 @@ def unify_string(string: str) -> str:
     """
     return string.upper().replace("\n", "").replace(" ", "")
 
-class Colors(enum.Enum):
+class Colors(str, enum.Enum):
     """Color constants used throughout the application"""
     # Dark theme colors
     BG_COLOR = "#232323"  # Dark background
-    ROW_ODD = "#2a2a2a"  # Slightly lighter than background
-    ROW_EVEN = "#252525"  # Between bg_color and row_odd
+    BG_LIGHTER = "#252525"  # Between background and lighter background
+    BG_LIGHTEST = "#2a2a2a"  # Slightly lighter than background
     TEXT_COLOR = "#e0e0e0"  # Light gray text
-    SCROLLBAR_BG = "#ddbc00"  # Yellow for scrollbar
     MAIN_YELLOW = "#ffde00"  # Yellow for buttons and highlights
+    MAIN_DARKER = "#ddbc00"  # Yellow for scrollbar
+
+    # def __str__(self):
+    #     return str(self.value)
+    #
+    # def __repr__(self):
+    #     return str(self.value)
