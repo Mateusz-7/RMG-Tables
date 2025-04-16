@@ -12,12 +12,6 @@ from .excel_file import ExcelFile
 
 log = logging.getLogger(__name__)
 
-# List to store obstacles that couldn't be found
-not_found_obstacles: List[Tuple[Place, str]] = []
-
-def addToList(obstacle: Place, course_name: str = ""):
-    """Add obstacle to the list of obstacles that couldn't be found"""
-    not_found_obstacles.append((obstacle, course_name))
 
 class ObstacleList(ExcelFile):
     IMPORTANT_OBSTACLE_NAMES = ["START", "META", "START KIDS", "META KIDS"]
@@ -33,6 +27,9 @@ class ObstacleList(ExcelFile):
 
     file_name = "LISTA PRZESZKÓD"
     file_path = f"WZORY/{file_name}.xlsx"
+
+    # List to store obstacles that couldn't be found
+    not_found_obstacles: List[Tuple[Layer, int, Place]] = []
 
     def __init__(self, google_map: Map):
         super().__init__(self.file_path)
@@ -165,7 +162,7 @@ class ObstacleList(ExcelFile):
         if found_obstacle_index is None:
             log.warning("-Unable to find obstacle: %s from course: %s", analysed_obstacle.name, course.name)
             # Add to list with course name
-            addToList(analysed_obstacle, course.name)
+            self.add_to_list(analysed_obstacle, course)
 
         return last_found_obstacle_index
 
@@ -227,8 +224,10 @@ class ObstacleList(ExcelFile):
         self._hide_unnecessary_columns_and_rows()
         return self.save_file(self.google_map.name + " - LISTA PRZESZKÓD.xlsx")
 
-    @classmethod
-    def create_and_save(cls, google_map: Map) -> Tuple[Optional[str], List[Tuple[Place, str]]]:
-        obstacle_list = cls(google_map)
-        file_path = obstacle_list._save_data()
-        return file_path, not_found_obstacles
+    def add_to_list(self, obstacle: Place, course: Layer):
+        """Add obstacle to the list of obstacles that couldn't be found"""
+        self.not_found_obstacles.append((course, self.courses.get_obstacle_number(obstacle), obstacle))
+
+    def create_and_save(self) -> Tuple[Optional[str], List[Tuple[Layer, int, Place]]]:
+        file_path = self._save_data()
+        return file_path, self.not_found_obstacles

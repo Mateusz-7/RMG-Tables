@@ -1,16 +1,15 @@
 import tkinter as tk
 from tkinter import ttk
-from typing import List, Tuple
 
-from GoogleMyMaps.models import Place
-from excel_tables.obstacle_list import not_found_obstacles
+from excel_tables.obstacle_list import ObstacleList
 
 
 class NotFoundObstaclesWindow(tk.Tk):
     """Window displaying obstacles that couldn't be found"""
 
-    def __init__(self, parent):
-        super().__init__(parent)
+    def __init__(self, obstacle_list):
+        super().__init__()
+        self.obstacle_list = obstacle_list
         self.title("Not Found Obstacles")
         self.geometry("600x400")
         self.resizable(True, True)
@@ -24,18 +23,20 @@ class NotFoundObstaclesWindow(tk.Tk):
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
         # Create columns
-        columns = ("obstacle_name", "course_name")
+        columns = ( "course_name", "obstacle_number", "obstacle_name")
 
         # Create treeview
         self.tree = ttk.Treeview(frame, columns=columns, show="headings", yscrollcommand=scrollbar.set)
 
         # Define headings
-        self.tree.heading("obstacle_name", text="Obstacle Name")
-        self.tree.heading("course_name", text="Course Name")
+        self.tree.heading("course_name", text="Formuła")
+        self.tree.heading("obstacle_number", text="Numer")
+        self.tree.heading("obstacle_name", text="Nazwa Przeszkody")
 
         # Define columns width
-        self.tree.column("obstacle_name", width=300)
-        self.tree.column("course_name", width=200)
+        self.tree.column("course_name", width=175)
+        self.tree.column("obstacle_number", width=40, anchor=tk.E)
+        self.tree.column("obstacle_name", width=285)
 
         # Pack treeview
         self.tree.pack(fill=tk.BOTH, expand=True)
@@ -52,15 +53,15 @@ class NotFoundObstaclesWindow(tk.Tk):
 
     def populate_tree(self):
         """Populate the tree with obstacles"""
-        for i, (obstacle, course_name) in enumerate(not_found_obstacles):
-            self.tree.insert("", tk.END, values=(obstacle.name, course_name))
+        for i, (course, number, obstacle) in enumerate(self.obstacle_list.not_found_obstacles):
+            self.tree.insert("", tk.END, values=(course.name, number, obstacle.name))
 
 
-def show_not_found_obstacles():
-    """Show window with obstacles that couldn't be found"""
-    if not not_found_obstacles:
-        return
+    @staticmethod
+    def show_not_found_obstacles(obstacle_list: ObstacleList):
+        """Show window with obstacles that couldn't be found"""
+        if not obstacle_list.not_found_obstacles:
+            return
 
-    window = NotFoundObstaclesWindow(None)
-    window.focus_set()
-    return window
+        window = NotFoundObstaclesWindow(obstacle_list)
+        return window

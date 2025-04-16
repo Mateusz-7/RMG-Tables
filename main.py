@@ -14,6 +14,4 @@ if __name__ == '__main__':
     main()
 
     # TODO:
-    # - lista nie znalezionych przeszkód
-
     # - dodanie odpowiedzialnej osoby
