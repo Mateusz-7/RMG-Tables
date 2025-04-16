@@ -145,7 +145,7 @@ class NotFoundObstaclesWindow(tk.Tk):
         button_frame.pack(fill=tk.X, pady=(10, 0))
 
         # Count label
-        count_text = f"Znaleziono {len(self.obstacle_list.not_found_obstacles)} przeszkód"
+        count_text = f"Lista zawiera {len(self.obstacle_list.not_found_obstacles)} przeszkód"
         count_label = tk.Label(
             button_frame, 
             text=count_text,
