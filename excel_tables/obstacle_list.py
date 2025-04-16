@@ -1,5 +1,5 @@
 import logging
-from typing import Optional, Tuple
+from typing import Optional, Tuple, List
 
 from openpyxl.utils import get_column_letter
 
@@ -11,6 +11,12 @@ from .excel_file import ExcelFile
 
 log = logging.getLogger(__name__)
 
+# List to store obstacles that couldn't be found
+not_found_obstacles: List[Tuple[Place, str]] = []
+
+def addToList(obstacle: Place, course_name: str = ""):
+    """Add obstacle to the list of obstacles that couldn't be found"""
+    not_found_obstacles.append((obstacle, course_name))
 
 class ObstacleList(ExcelFile):
     IMPORTANT_OBSTACLE_NAMES = ["START", "META", "START KIDS", "META KIDS"]
@@ -157,7 +163,8 @@ class ObstacleList(ExcelFile):
         )
         if found_obstacle_index is None:
             log.warning("-Unable to find obstacle: %s from course: %s", analysed_obstacle.name, course.name)
-            # TODO: Show on the Final Frame or Error Window
+            # Add to list with course name
+            addToList(analysed_obstacle, course.name)
 
         return last_found_obstacle_index
 
@@ -220,6 +227,7 @@ class ObstacleList(ExcelFile):
         return self.save_file(self.google_map.name + " - LISTA PRZESZKÓD.xlsx")
 
     @classmethod
-    def create_and_save(cls, google_map: Map) -> Optional[str]:
+    def create_and_save(cls, google_map: Map) -> Tuple[Optional[str], List[Tuple[Place, str]]]:
         obstacle_list = cls(google_map)
-        return obstacle_list._save_data()
+        file_path = obstacle_list._save_data()
+        return file_path, not_found_obstacles
