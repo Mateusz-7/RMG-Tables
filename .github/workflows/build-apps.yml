@@ -44,7 +44,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: macos-app
-          path: dist/GeneratorListyPrzeszkod.app
+          path: dist/GeneratorListyPrzeszkod
 
   build-linux:
     runs-on: ubuntu-latest
