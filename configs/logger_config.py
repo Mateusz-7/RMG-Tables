@@ -2,7 +2,12 @@ import logging
 
 
 class ColorFormatter(logging.Formatter):
-    """Custom logging formatter to add colors based on log levels."""
+    """Custom logging formatter to add colors based on log levels.
+    
+    This formatter enhances log readability by applying ANSI color codes to different
+    log components based on their severity level. The format includes timestamp,
+    logger name, line number, thread name, log level, and the actual message.
+    """
 
     # Define colors for each log level
     COLOR_CODES = {
@@ -16,6 +21,22 @@ class ColorFormatter(logging.Formatter):
     RESET_CODE = "\033[0m"
 
     def format(self, record):
+        """Format the log record with color-coded components.
+        
+        This method applies ANSI color codes to different parts of the log message
+        to enhance readability. It creates a custom format string with colored
+        components and then uses the standard logging.Formatter to apply it.
+        
+        Parameters
+        ----------
+        record : logging.LogRecord
+            The log record to format, containing all the information about the log event.
+            
+        Returns
+        -------
+        str
+            The formatted log message with color codes applied.
+        """
         # Get the color based on the log level
         color = self.COLOR_CODES.get(record.levelno, self.RESET_CODE)
         white = "\033[97m"  # White
@@ -39,6 +60,24 @@ class ColorFormatter(logging.Formatter):
 
 # Set up the root logger configuration
 def setup_logger(log_level=logging.DEBUG):
+    """Set up and configure the root logger with colored console output.
+    
+    This function configures the root logger with a console handler that uses
+    the ColorFormatter for enhanced readability. It ensures that handlers are
+    not duplicated if the function is called multiple times.
+    
+    Parameters
+    ----------
+    log_level : int, optional
+        The minimum logging level to display. Messages below this level will be ignored.
+        Default is logging.DEBUG, which shows all log messages.
+        
+    Returns
+    -------
+    logging.Logger
+        The configured root logger instance that can be used for logging throughout
+        the application.
+    """
     # Configure the root logger
     logger = logging.getLogger()
     logger.setLevel(log_level)

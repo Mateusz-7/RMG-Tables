@@ -8,12 +8,40 @@ log = logging.getLogger(__name__)
 
 
 def resource_path(relative_path: str) -> str:
+    """
+    Get the absolute path to a resource, works for both development and PyInstaller frozen applications.
+    
+    This function handles path resolution differently depending on whether the application
+    is running in a development environment or as a PyInstaller frozen executable.
+    
+    Parameters:
+        relative_path (str): The relative path to the resource file or directory
+        
+    Returns:
+        str: The absolute path to the resource
+    """
     if hasattr(sys, '_MEIPASS'):
         return os.path.join(sys._MEIPASS, relative_path)
     return os.path.join(os.path.abspath("."), relative_path)
 
 
 def start_application(file_path: str) -> None:
+    """
+    Open a file with the default application based on the operating system.
+    
+    This function detects the current operating system and uses the appropriate
+    method to open the specified file with its associated default application.
+    Supports Windows, macOS (Darwin), and Linux.
+    
+    Parameters:
+        file_path (str): The path to the file to be opened
+        
+    Returns:
+        None
+    
+    Raises:
+        Logs an error if the operating system is not supported
+    """
     log.info("Opening file: %s", file_path)
     if platform.system() == "Windows":
         os.startfile(file_path)
@@ -27,13 +55,39 @@ def start_application(file_path: str) -> None:
 
 def unify_string(string: str) -> str:
     """
-    :param string: String to unify
-    :return: String without spaces, new line characters, and with UPPER
+    Standardize a string by removing whitespace and converting to uppercase.
+    
+    Parameters:
+        string (str): String to unify
+        
+    Returns:
+        str: String without spaces, new line characters, and with UPPER
     """
     return string.upper().replace("\n", "").replace(" ", "")
 
+
 class Colors(str, enum.Enum):
-    """Color constants used throughout the application"""
+    """
+    Color constants used throughout the application.
+    
+    This enumeration provides a centralized collection of color hex codes organized by categories:
+    - Base UI colors (background, text, highlights)
+    - Basic colors (black, white, primary colors)
+    - Modern UI color palette
+    - Material design inspired colors
+    - Dark mode friendly colors
+    - Pastel colors
+    - Grayscale gradient shades
+    
+    Each color is represented as a hexadecimal string value (#RRGGBB format).
+    
+    Inherits from:
+        str: Allows the enum values to be used directly as strings
+        enum.Enum: Provides enumeration functionality
+    
+    Usage:
+        Colors.BG_COLOR  # Returns "#232323"
+    """
     BG_COLOR = "#232323"  # Dark background
     BG_LIGHT = "#2a2a2a"  # Slightly lighter than background
     BG_VERY_LIGHT = "#565656" # Highly lighter than background

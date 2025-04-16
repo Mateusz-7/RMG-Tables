@@ -9,6 +9,17 @@ class NotFoundObstaclesWindow(tk.Tk):
     """Window displaying obstacles that couldn't be found"""
 
     def __init__(self, obstacle_list):
+        """
+        Initialize the NotFoundObstaclesWindow.
+        
+        Creates a window that displays a list of obstacles that couldn't be found
+        in a treeview with scrollbar. The window shows the course name, obstacle number,
+        and obstacle name for each not found obstacle.
+        
+        Parameters:
+            obstacle_list (ObstacleList): An object containing the list of obstacles 
+                                          that couldn't be found.
+        """
         super().__init__()
         self.obstacle_list = obstacle_list
         self.title("RMG - Robot Mateusza Grzech")
@@ -96,14 +107,32 @@ class NotFoundObstaclesWindow(tk.Tk):
         count_label.pack(side=tk.LEFT, padx=5)
 
     def populate_tree(self):
-        """Populate the tree with obstacles"""
+        """
+        Populate the tree with obstacles.
+        
+        Iterates through the list of not found obstacles and adds each one to the treeview
+        with alternating row colors for better readability.
+        """
         for i, (course, number, obstacle) in enumerate(self.obstacle_list.not_found_obstacles):
             tag = 'odd' if i % 2 else 'even'
             self.tree.insert("", tk.END, values=(course.name, number, obstacle.name), tags=(tag,))
 
     @staticmethod
     def show_not_found_obstacles(obstacle_list: ObstacleList):
-        """Show window with obstacles that couldn't be found"""
+        """
+        Show window with obstacles that couldn't be found.
+        
+        Creates and displays a window showing obstacles that couldn't be found,
+        but only if there are any such obstacles.
+        
+        Parameters:
+            obstacle_list (ObstacleList): An object containing the list of obstacles
+                                          that couldn't be found.
+        
+        Returns:
+            NotFoundObstaclesWindow or None: The created window instance if there are
+                                            obstacles that couldn't be found, None otherwise.
+        """
         if not obstacle_list.not_found_obstacles:
             return
 

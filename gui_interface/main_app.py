@@ -15,7 +15,22 @@ log = logging.getLogger(__name__)
 
 
 class MainApp(tk.Tk):
+    """
+    Main application class for the RMG (Robot Mateusza Grzech) application.
+    
+    This class initializes the main application window, sets up the UI frames,
+    and handles the core functionality of processing Google Maps data to create
+    obstacle lists.
+    """
+    
     def __init__(self):
+        """
+        Initialize the main application window and set up the UI components.
+        
+        Sets up the application window with title, icon, and size, creates the
+        frame container, initializes all UI frames, and sets up initial state
+        variables for map processing.
+        """
         log.debug("Initializing application...")
         super().__init__()
         self.title("RMG - Robot Mateusza Grzech")
@@ -49,6 +64,16 @@ class MainApp(tk.Tk):
         self.bind("<Escape>", self.quit_app)
 
     def center_window(self, width, height):
+        """
+        Center the application window on the screen.
+        
+        Parameters:
+            width (int): The desired width of the window in pixels.
+            height (int): The desired height of the window in pixels.
+        
+        Returns:
+            None
+        """
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
         x = (screen_width - width) // 2
@@ -56,10 +81,31 @@ class MainApp(tk.Tk):
         self.geometry(f"{width}x{height}+{x}+{y}")
 
     def show_frame(self, page_name):
+        """
+        Display the specified frame in the application window.
+        
+        Parameters:
+            page_name (str): The name of the frame to display.
+        
+        Returns:
+            None
+        """
         frame = self.frames[page_name]
         frame.tkraise()
 
     def process_map_link(self, map_link: str):
+        """
+        Process the provided Google Maps link in a separate thread.
+        
+        Creates a new thread to handle the map processing to prevent UI freezing.
+        If successful, proceeds to process the map data; otherwise, displays an error.
+        
+        Parameters:
+            map_link (str): The Google Maps URL to process.
+        
+        Returns:
+            None
+        """
         def process():
             try:
                 self.google_map = self.gmm.create_map(map_link)
@@ -73,6 +119,15 @@ class MainApp(tk.Tk):
         thread.start()
 
     def process_map(self):
+        """
+        Process the loaded Google Map data to create an obstacle list.
+        
+        Creates an obstacle list from the loaded map data, handles any obstacles
+        that couldn't be found, and updates the UI accordingly.
+        
+        Returns:
+            None
+        """
         log.info("Map loaded successfully")
         obstacle_list = ObstacleList(self.google_map)
         self.obstacle_list_file, not_found_obstacles = obstacle_list.create_and_save()
@@ -86,16 +141,46 @@ class MainApp(tk.Tk):
             self.show_frame("FinalFrame")
 
     def failed_to_load_map(self, error_message: str):
+        """
+        Handle the case when map loading fails.
+        
+        Displays an error window with the provided error message and
+        returns to the map link input frame.
+        
+        Parameters:
+            error_message (str): The error message to display.
+        
+        Returns:
+            None
+        """
         log.error("Failed to load map: %s", error_message)
         ErrorWindow(self, error_message)
         self.reopen_map_frame()
 
     def reopen_map_frame(self):
+        """
+        Reset and display the map link input frame.
+        
+        Clears the previous map link input, rebinds the submit button,
+        and displays the map link frame.
+        
+        Returns:
+            None
+        """
         log.info("Please provide map link again")
         self.frames["MapLinkFrame"].entry.delete(0, tk.END)
         self.frames["MapLinkFrame"].bind_submit_button()
         self.show_frame("MapLinkFrame")
 
     def quit_app(self, event=None):
+        """
+        Close the application.
+        
+        Parameters:
+            event (Event, optional): The event that triggered this method, if any.
+        
+        Returns:
+            None
+        """
         log.info("Closing application...")
         self.destroy()

@@ -12,11 +12,33 @@ log = logging.getLogger(__name__)
 
 
 class CourseTrail:
+    """
+    A class that represents a course trail and provides methods for distance calculations.
+    """
+    
     def __init__(self, course: Layer):
+        """
+        Initialize a CourseTrail object with a course layer.
+        
+        Parameters:
+            course (Layer): The course layer containing places and trail information.
+        """
         self.trail = self._get_trail(course)
 
     @staticmethod
     def _get_trail(course) -> Optional[list]:
+        """
+        Extract the trail coordinates from a course layer.
+        
+        Searches for a place of type "Line" within the course that has a name matching
+        or contained within the course name.
+        
+        Parameters:
+            course (Layer): The course layer containing places to search through.
+            
+        Returns:
+            Optional[list]: A list of coordinate points forming the trail, or None if no matching trail is found.
+        """
         for place in course.places:
             if place.place_type == "Line":
                 if (unify_string(place.name) in unify_string(course.name)
@@ -25,11 +47,15 @@ class CourseTrail:
 
     def get_obstacle_distance(self, obstacle: Place) -> Optional[float]:
         """
-
-        :param obstacle: Place
-        :return: Distance in meters from start to given point
+        Calculate the distance from the start of the trail to a given obstacle.
+        
+        Parameters:
+            obstacle (Place): The obstacle place object containing coordinates.
+            
+        Returns:
+            Optional[float]: Distance in meters from the start of the trail to the given obstacle,
+                            or None if coordinates are missing.
         """
-
         if obstacle.coords is None:
             log.warning("Obstacle cords is none")
             return None
@@ -45,8 +71,14 @@ class CourseTrail:
 
     def _calculate_total_distance(self, segment_idx, distance_along):
         """
-        Calculate distance between starting point, and specified point.
-        Returns distance in meters
+        Calculate distance between starting point and a specified point along the trail.
+        
+        Parameters:
+            segment_idx (int): Index of the segment where the point is located.
+            distance_along (float): Distance along the segment from its start point.
+            
+        Returns:
+            float: Total distance in meters from the start of the trail to the specified point.
         """
         total_distance = 0
         for i in range(segment_idx):
@@ -62,9 +94,16 @@ class CourseTrail:
     @staticmethod
     def _haversine_distance(lat1, lon1, lat2, lon2):
         """
-        Calculate the great circle distance between two points
-        on the earth (specified in decimal degrees)
-        Returns distance in meters
+        Calculate the great circle distance between two points on the earth.
+        
+        Parameters:
+            lat1 (float): Latitude of the first point in decimal degrees.
+            lon1 (float): Longitude of the first point in decimal degrees.
+            lat2 (float): Latitude of the second point in decimal degrees.
+            lon2 (float): Longitude of the second point in decimal degrees.
+            
+        Returns:
+            float: Distance in meters between the two points.
         """
         # Convert decimal degrees to radians
         lat1, lon1, lat2, lon2 = map(radians, [lat1, lon1, lat2, lon2])
@@ -81,9 +120,18 @@ class CourseTrail:
     @staticmethod
     def _point_to_line_distance(point, line_start, line_end):
         """
-        Calculate the minimum distance from a point to a line segment defined by two points.
-        All points are in (lat, lon) format.
-        Returns distance in meters
+        Calculate the minimum distance from a point to a line segment.
+        
+        Parameters:
+            point (tuple): A tuple containing (lat, lon) of the point.
+            line_start (tuple): A tuple containing (lat, lon) of the line segment start.
+            line_end (tuple): A tuple containing (lat, lon) of the line segment end.
+            
+        Returns:
+            tuple: A tuple containing:
+                - distance (float): The perpendicular distance in meters from the point to the line segment.
+                - along_line (float): The distance in meters along the line segment from the start point
+                                     to the projection of the given point onto the segment.
         """
         # Convert to radians for calculations
         lat, lon = point
@@ -121,7 +169,7 @@ class CourseTrail:
         if d_point_to_end == 0 or d_start_to_end == 0:
             return d_point_to_end, d_start_to_end
         cos_angle = (d_point_to_end ** 2 + d_start_to_end ** 2 - d_point_to_start ** 2) / (
-                    2 * d_point_to_end * d_start_to_end)
+                    2 * d_point_to_end * d_point_to_start)
 
         # Handle floating point errors
         if cos_angle > 1:
@@ -153,7 +201,22 @@ class CourseTrail:
     def _find_closest_line_segment(point, line_points):
         """
         Find the line segment in a list of points that is closest to the given point.
-        Returns the index of the first point of the segment and the distance along that segment.
+        
+        This function iterates through all line segments formed by consecutive points
+        in the provided list and determines which segment is closest to the specified point.
+        It uses the _point_to_line_distance method to calculate distances.
+        
+        Parameters:
+            point (tuple): A tuple containing the latitude and longitude (lat, lon) of the point.
+            line_points (list): A list of points (each as a lat, lon tuple) forming a polyline.
+        
+        Returns:
+            tuple: A tuple containing three elements:
+                - closest_segment_idx (int): The index of the first point of the closest line segment.
+                - distance_along_line (float): The distance in meters along the closest segment from 
+                  its starting point to the projection of the given point onto the segment.
+                - min_distance (float): The perpendicular distance in meters from the point to 
+                  the closest line segment.
         """
         min_distance = float('inf')
         closest_segment_idx = -1
