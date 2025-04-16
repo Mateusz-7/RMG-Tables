@@ -1,3 +1,4 @@
+import platform
 import tkinter as tk
 import threading
 from GoogleMyMaps import GoogleMyMaps
@@ -15,7 +16,19 @@ class MainApp(tk.Tk):
         print("Initializing application...")
         super().__init__()
         self.title("RMG - Robot Mateusza Grzech")
-        self.iconbitmap(resource_path("gui_interface/robot.ico"))
+
+        # Cross-platform icon handling
+        try:
+            if platform.system() == "Windows":
+                # For Windows
+                self.iconbitmap(resource_path("gui_interface/robot.ico"))
+            else:
+                # For Linux and macOS
+                icon_image = tk.PhotoImage(file=resource_path("gui_interface/robot_square.png"))
+                self.iconphoto(False, icon_image)
+        except Exception as e:
+            print(f"Could not set application icon: {e}")
+
         self.geometry("600x400")
         self.center_window(600, 400)
 
