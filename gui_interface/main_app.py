@@ -1,19 +1,21 @@
-import platform
-import tkinter as tk
+import logging
 import threading
+import tkinter as tk
+
 from GoogleMyMaps import GoogleMyMaps
+from excel_tables.obstacle_list import ObstacleList
 from excel_tables.utils import resource_path
 from .error_window import ErrorWindow
 from .final_frame import FinalFrame
-
-from .map_link_frame import MapLinkFrame
 from .loading_frame import LoadingFrame
-from excel_tables.obstacle_list import ObstacleList
+from .map_link_frame import MapLinkFrame
+
+log = logging.getLogger(__name__)
 
 
 class MainApp(tk.Tk):
     def __init__(self):
-        print("Initializing application...")
+        log.debug("Initializing application...")
         super().__init__()
         self.title("RMG - Robot Mateusza Grzech")
 
@@ -70,7 +72,7 @@ class MainApp(tk.Tk):
         thread.start()
 
     def process_map(self):
-        print("Map loaded successfully")
+        log.info("Map loaded successfully")
         self.obstacle_list_file = ObstacleList.create_and_save(self.google_map)
         if self.obstacle_list_file is None:
             self.reopen_map_frame()
@@ -80,16 +82,16 @@ class MainApp(tk.Tk):
             self.show_frame("FinalFrame")
 
     def failed_to_load_map(self, error_message: str):
-        print(f"*Failed to load map: {error_message}")
+        log.error("Failed to load map: %s", error_message)
         ErrorWindow(self, error_message)
         self.reopen_map_frame()
 
     def reopen_map_frame(self):
-        print("Please provide map link again")
+        log.info("Please provide map link again")
         self.frames["MapLinkFrame"].entry.delete(0, tk.END)
         self.frames["MapLinkFrame"].bind_submit_button()
         self.show_frame("MapLinkFrame")
 
     def quit_app(self, event=None):
-        print("Closing application...")
+        log.info("Closing application...")
         self.destroy()

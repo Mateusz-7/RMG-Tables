@@ -1,6 +1,9 @@
+import logging
 import os
 import platform
 import tkinter as tk
+
+log = logging.getLogger(__name__)
 
 
 class FinalFrame(tk.Frame):
@@ -52,7 +55,7 @@ class FinalFrame(tk.Frame):
     def open_file(self, event=None):
         obstacle_list_file = self.controller.obstacle_list_file
         if obstacle_list_file:
-            print("Opening file: ", obstacle_list_file)
+            log.debug("Opening file: %s", obstacle_list_file)
             if platform.system() == "Windows":
                 os.startfile(obstacle_list_file)
             elif platform.system() == "Darwin":
@@ -60,10 +63,10 @@ class FinalFrame(tk.Frame):
             elif platform.system() == "Linux":
                 os.system("xdg-open '" + obstacle_list_file + "'")
             else:
-                print("Unsupported operating system")
+                log.error("Unsupported operating system")
             self.controller.quit_app()
 
     def bind_open_button(self):
-        self.bind("<Return>", self.open_file) # Add binding for main Enter key
+        self.bind("<Return>", self.open_file)  # Add binding for main Enter key
         self.bind("<KP_Enter>", self.open_file)  # Add binding for numeric keypad Enter
         self.focus_set()

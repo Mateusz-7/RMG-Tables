@@ -1,10 +1,13 @@
+import logging
 import tkinter as tk
 from tkinter.font import Font
+
+log = logging.getLogger(__name__)
 
 
 class MapLinkFrame(tk.Frame):
     def __init__(self, parent, controller):
-        print("Please provide map link")
+        log.info("Please provide map link")
         super().__init__(parent)
         self.controller = controller
         self.config(bg="#232323")
@@ -71,7 +74,7 @@ class MapLinkFrame(tk.Frame):
     def submit_link(self, event=None):
         map_link = self.entry.get()
         if map_link:
-            print("Map link provided:", map_link)
+            log.info("Map link provided: %s", map_link)
             self.controller.show_frame("LoadingFrame")
             self.controller.process_map_link(map_link)
 
