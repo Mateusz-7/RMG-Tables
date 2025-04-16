@@ -1,3 +1,4 @@
+import enum
 import logging
 import os
 import platform
@@ -30,3 +31,13 @@ def unify_string(string: str) -> str:
     :return: String without spaces, new line characters, and with UPPER
     """
     return string.upper().replace("\n", "").replace(" ", "")
+
+class Colors(enum.Enum):
+    """Color constants used throughout the application"""
+    # Dark theme colors
+    BG_COLOR = "#232323"  # Dark background
+    ROW_ODD = "#2a2a2a"  # Slightly lighter than background
+    ROW_EVEN = "#252525"  # Between bg_color and row_odd
+    TEXT_COLOR = "#e0e0e0"  # Light gray text
+    SCROLLBAR_BG = "#ddbc00"  # Yellow for scrollbar
+    MAIN_YELLOW = "#ffde00"  # Yellow for buttons and highlights
