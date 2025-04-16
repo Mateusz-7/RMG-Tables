@@ -3,7 +3,7 @@ import threading
 import tkinter as tk
 
 from GoogleMyMaps import GoogleMyMaps
-from configs.utils import resource_path
+from configs.utils import resource_path, Colors
 from excel_tables.obstacle_list import ObstacleList
 from .error_window import ErrorWindow
 from .final_frame import FinalFrame
@@ -30,7 +30,7 @@ class MainApp(tk.Tk):
         self.center_window(600, 400)
 
         self.frames = {}
-        container = tk.Frame(self, bg="#232323")
+        container = tk.Frame(self, bg=Colors.BG_COLOR)
         container.pack(fill="both", expand=True)
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)

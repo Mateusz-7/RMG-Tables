@@ -1,5 +1,7 @@
 import tkinter as tk
 
+from configs.utils import Colors
+
 
 class ErrorWindow(tk.Toplevel):
     def __init__(self, parent, error_message):
@@ -8,13 +10,13 @@ class ErrorWindow(tk.Toplevel):
         self.geometry("300x200")
         self.center_window_on_parent(parent, 300, 200)
 
-        error_frame = tk.Frame(self, bg="#cc0033")
+        error_frame = tk.Frame(self, bg=Colors.ERROR_RED)
         error_frame.pack(fill="both", expand=True)
         error_label = tk.Label(
             error_frame,
             text="COŚ POSZŁO NIE TAK:",
             font=("Runmageddon", 25),
-            bg="#cc0033"
+            bg=Colors.ERROR_RED
         )
         error_label.pack(pady=(20, 0))
 
@@ -22,7 +24,7 @@ class ErrorWindow(tk.Toplevel):
             error_frame,
             text=error_message,
             font=tk.font.Font(size=12),
-            bg="#cc0033",
+            bg=Colors.ERROR_RED,
             wraplength=300
         )
         error_message_label.pack()
@@ -32,10 +34,10 @@ class ErrorWindow(tk.Toplevel):
             text="OK",
             font=("Runmageddon", 20),
             width=10,
-            bg="#ffde00",
-            fg="#000000",
-            activeforeground="#ffde00",
-            activebackground="#cc0033",
+            bg=Colors.YELLOW,
+            fg=Colors.BLACK,
+            activeforeground=Colors.YELLOW,
+            activebackground=Colors.ERROR_RED,
             bd=4,
             command=self.destroy,
             cursor="hand2"
@@ -53,10 +55,10 @@ class ErrorWindow(tk.Toplevel):
         self.ok_button.bind("<Leave>", self.on_leave)
 
     def on_enter(self, event):
-        self.ok_button.config(bg="#ffde00", fg="#cc0033")
+        self.ok_button.config(bg=Colors.YELLOW, fg=Colors.ERROR_RED)
 
     def on_leave(self, event):
-        self.ok_button.config(bg="#ffde00", fg="#000000")
+        self.ok_button.config(bg=Colors.YELLOW, fg=Colors.BLACK)
 
     def center_window_on_parent(self, parent, width, height):
         x = parent.winfo_x() + (parent.winfo_width() - width) // 2

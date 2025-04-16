@@ -2,6 +2,8 @@ import logging
 import tkinter as tk
 from tkinter.font import Font
 
+from configs.utils import Colors
+
 log = logging.getLogger(__name__)
 
 
@@ -10,20 +12,20 @@ class MapLinkFrame(tk.Frame):
         log.info("Please provide map link")
         super().__init__(parent)
         self.controller = controller
-        self.config(bg="#232323")
+        self.config(bg=Colors.BG_COLOR)
 
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
-        content_frame = tk.Frame(self, bg="#232323")
+        content_frame = tk.Frame(self, bg=Colors.BG_COLOR)
         content_frame.grid(row=0, column=0)
 
         label = tk.Label(
             content_frame,
             text="Podaj link do mapy:",
             font=("Runmageddon", 35),
-            bg="#232323",
-            fg="#ffde00"
+            bg=Colors.BG_COLOR,
+            fg=Colors.YELLOW
         )
         label.pack(pady=(80, 50))
 
@@ -40,10 +42,10 @@ class MapLinkFrame(tk.Frame):
             content_frame,
             text="GENERUJ",
             font=("Runmageddon", 20),
-            bg="#ffde00",
-            fg="#000000",
-            activeforeground="#ffde00",
-            activebackground="#232323",
+            bg=Colors.YELLOW,
+            fg=Colors.BLACK,
+            activeforeground=Colors.YELLOW,
+            activebackground=Colors.BG_COLOR,
             bd=5,
             width=10,
             command=self.submit_link,
@@ -57,8 +59,8 @@ class MapLinkFrame(tk.Frame):
                  'Wszystkie nazwy dystansów muszą zaczynać się od "TRASA"\n'
                  'Warstwa najdłuższego dystansu musi być przed pozostałymi dystansami',
             font=("Runmageddon", 10),
-            bg="#232323",
-            fg="#ffffff"
+            bg=Colors.BG_COLOR,
+            fg=Colors.TEXT_COLOR
         )
         disclaimer_label.pack()
 
@@ -66,10 +68,10 @@ class MapLinkFrame(tk.Frame):
         self.submit_button.bind("<Leave>", self.on_leave)
 
     def on_enter(self, event):
-        self.submit_button.config(bg="#ffde00", fg="#565656")
+        self.submit_button.config(bg=Colors.YELLOW, fg=Colors.BG_VERY_LIGHT)
 
     def on_leave(self, event):
-        self.submit_button.config(bg="#ffde00", fg="#000000")
+        self.submit_button.config(bg=Colors.YELLOW, fg=Colors.BLACK)
 
     def submit_link(self, event=None):
         map_link = self.entry.get()

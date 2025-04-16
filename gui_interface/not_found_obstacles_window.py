@@ -33,7 +33,7 @@ class NotFoundObstaclesWindow(tk.Tk):
             text="Lista przeszkód, których nie udało się znaleźć",
             font=title_font,
             bg=Colors.BG_COLOR,
-            fg=Colors.MAIN_YELLOW,
+            fg=Colors.YELLOW,
             pady=10
         )
         title_label.pack(fill=tk.X)
@@ -44,9 +44,9 @@ class NotFoundObstaclesWindow(tk.Tk):
 
         # Create scrollbar with matching colors
         scrollbar = tk.Scrollbar(frame,
-                                 bg=Colors.MAIN_YELLOW,
-                                 troughcolor=Colors.MAIN_DARKER,
-                                 activebackground=Colors.MAIN_YELLOW)
+                                 bg=Colors.YELLOW,
+                                 troughcolor=Colors.BG_LIGHT,
+                                 activebackground=Colors.YELLOW_DARKER)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
         # Create columns
@@ -75,7 +75,7 @@ class NotFoundObstaclesWindow(tk.Tk):
 
         # Add alternating row colors with explicit foreground
         self.tree.tag_configure('odd', background=Colors.BG_COLOR, foreground=Colors.TEXT_COLOR)
-        self.tree.tag_configure('even', background=Colors.BG_LIGHTER, foreground=Colors.TEXT_COLOR)
+        self.tree.tag_configure('even', background=Colors.BG_LIGHT, foreground=Colors.TEXT_COLOR)
 
         # Add obstacles to the list
         self.populate_tree()
@@ -90,7 +90,7 @@ class NotFoundObstaclesWindow(tk.Tk):
             button_frame,
             text=count_text,
             bg=Colors.BG_COLOR,
-            fg=Colors.MAIN_YELLOW,
+            fg=Colors.YELLOW,
             font=default_font
         )
         count_label.pack(side=tk.LEFT, padx=5)
