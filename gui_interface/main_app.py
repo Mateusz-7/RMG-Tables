@@ -4,7 +4,7 @@ import tkinter as tk
 
 from GoogleMyMaps import GoogleMyMaps
 from excel_tables.obstacle_list import ObstacleList
-from excel_tables.utils import resource_path
+from configs.utils import resource_path
 from .error_window import ErrorWindow
 from .final_frame import FinalFrame
 from .loading_frame import LoadingFrame

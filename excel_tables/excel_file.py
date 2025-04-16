@@ -11,7 +11,7 @@ from openpyxl.utils import get_column_letter
 from openpyxl.workbook.workbook import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 
-from excel_tables.utils import resource_path
+from configs.utils import resource_path
 
 log = logging.getLogger(__name__)
 

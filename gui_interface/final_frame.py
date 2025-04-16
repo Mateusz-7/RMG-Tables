@@ -1,9 +1,7 @@
 import logging
-import os
-import platform
 import tkinter as tk
 
-from excel_tables.utils import start_application
+from configs.utils import start_application
 
 log = logging.getLogger(__name__)
 
