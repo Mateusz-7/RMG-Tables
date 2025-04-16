@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import font
+from tkinter.font import Font
 
 
 class MapLinkFrame(tk.Frame):
@@ -24,7 +24,7 @@ class MapLinkFrame(tk.Frame):
         )
         label.pack(pady=(80, 50))
 
-        self.entry = tk.Entry(content_frame, width=70, font=tk.font.Font(size=10))
+        self.entry = tk.Entry(content_frame, width=70, font=Font(size=10))
         self.entry.pack(pady=10)
         self.bind_submit_button()
         self.entry.focus_set()
