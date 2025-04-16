@@ -21,10 +21,10 @@ class MainApp(tk.Tk):
         try:
             if platform.system() == "Windows":
                 # For Windows
-                self.iconbitmap(resource_path("gui_interface/robot.ico"))
+                self.iconbitmap(resource_path("gui_interface/icon.ico"))
             else:
                 # For Linux and macOS
-                icon_image = tk.PhotoImage(file=resource_path("gui_interface/robot_square.png"))
+                icon_image = tk.PhotoImage(file=resource_path("gui_interface/icon.png"))
                 self.iconphoto(True, icon_image)
         except Exception as e:
             print(f"Could not set application icon: {e}")
