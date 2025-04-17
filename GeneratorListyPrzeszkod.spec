@@ -1,11 +1,20 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+import os
+import pyfiglet
+
+# Get the directory where pyfiglet fonts are stored
+pyfiglet_fonts_dir = os.path.join(os.path.dirname(pyfiglet.__file__), 'fonts')
 
 a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('WZORY', 'WZORY'), ('gui_interface/icon.png', 'gui_interface/')],
+    datas=[
+        ('WZORY', 'WZORY'), 
+        ('gui_interface/icon.png', 'gui_interface/'),
+        (pyfiglet_fonts_dir, os.path.join('pyfiglet', 'fonts'))
+    ],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
