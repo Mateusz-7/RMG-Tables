@@ -33,6 +33,20 @@ def main():
     - The MainApp class is imported from gui_interface.main_app and handles all UI components
     - The Tkinter mainloop() method blocks execution until the application window is closed
     
+    Application Flow:
+    1. Display the RMG banner using pyfiglet for visual identification
+    2. Configure logging system for application monitoring
+    3. Initialize the main application window and UI components
+    4. Enter the event loop to process user interactions
+    5. Process Google Maps data and generate Excel tables based on user input
+    
+    Error Handling:
+    - Font rendering errors are gracefully handled with fallbacks to ensure the application
+      continues to run even if the ASCII art banner cannot be displayed properly
+    - The application uses a comprehensive logging system to track errors and application state
+    - GUI components include error handling and user feedback mechanisms
+    - Exceptions in the main thread are caught to prevent application crashes
+    
     Example Usage:
     ```
     python main.py
@@ -43,6 +57,15 @@ def main():
     - configs.logger_config.setup_logger function
     - gui_interface.main_app.MainApp class
     - Tkinter (implicitly used through MainApp)
+    - pyfiglet for ASCII art banner generation
+    - Google Maps API integration through GoogleMyMaps module
+    - Excel processing capabilities through excel_tables module
+    
+    System Requirements:
+    - Python 3.10 or higher
+    - Tkinter library (usually included with Python installations)
+    - Internet connection for Google Maps API access
+    - Sufficient permissions to read/write files in the application directory
     
     Returns:
         None: This function does not return any value. The application runs until the
@@ -53,6 +76,9 @@ def main():
         - Proper exception handling is managed within the MainApp class.
         - Future enhancements may include command-line arguments for different logging levels
           or other configuration options.
+        - The application processes Google Maps data to extract course information and
+          generates formatted Excel tables for further analysis.
+        - Performance may vary based on the complexity of the Google Maps data being processed.
     """
     try:
         result = pyfiglet.figlet_format("RMG", font="ansi_shadow")
