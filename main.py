@@ -54,8 +54,16 @@ def main():
         - Future enhancements may include command-line arguments for different logging levels
           or other configuration options.
     """
-    result = pyfiglet.figlet_format("RMG", font="ansi_shadow")
-    print(f"\033[94m{result}")
+    try:
+        result = pyfiglet.figlet_format("RMG", font="ansi_shadow")
+        print(f"\033[94m{result}")
+    except pyfiglet.FontNotFound:
+        try:
+            result = pyfiglet.figlet_format("default")
+            print(f"\033[94m{result}")
+        except Exception as e:
+            print(f"\033[94m=== RMG ===")
+            print(f"Font error: {str(e)}")
 
     setup_logger(logging.DEBUG)
 
