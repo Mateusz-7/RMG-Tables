@@ -106,7 +106,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 For questions or support, please open an issue or contact [your-email@example.com](mailto:your-email@example.com).
 
 ---
-
 <p align="center">
-  Made with ❤️ by Mateusz Grzech @Mateusz-7 & Adrian Burakowski @7Adrian
+  Made with ❤️ by <a href="https://github.com/Mateusz-7">Mateusz-7</a> & <a href="https://github.com/7Adrian">7Adrian</a>
 </p>
