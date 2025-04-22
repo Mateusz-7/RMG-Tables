@@ -34,7 +34,7 @@ class Areas:
         """
         for layer in google_map.layers:
             if "STREFY" in layer.name.upper():
-                return layer.places
+                return [area for area in layer.places if area.place_type == "Polygon"]
         return []
 
     @staticmethod
