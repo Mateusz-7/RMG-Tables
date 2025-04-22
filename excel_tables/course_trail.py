@@ -10,7 +10,6 @@ from configs.utils import unify_string
 log = logging.getLogger(__name__)
 
 
-
 class CourseTrail:
     """
     A class that represents a course trail and provides methods for distance calculations.
@@ -44,6 +43,7 @@ class CourseTrail:
                 if (unify_string(place.name) in unify_string(course.name)
                         or unify_string(place.name) == unify_string(course.name)):
                     return place.coords
+        return None
 
     def get_obstacle_distance(self, obstacle: Place) -> Optional[float]:
         """
