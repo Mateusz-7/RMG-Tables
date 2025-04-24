@@ -195,6 +195,7 @@ dist/
 build/
 WZORY/
 Runmageddon.ttf
-./*.xlsx
+*.xlsx
+!/WZORY/*.xlsx
 
 venv/
