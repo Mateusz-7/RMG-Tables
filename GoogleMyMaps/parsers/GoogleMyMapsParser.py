@@ -18,7 +18,7 @@ class GoogleMyMapsParser:
     @staticmethod
     def _validate_map_link(map_link: str):
         map_link_pattern = re.compile(
-            r'https://www\.google\.com/maps/d/u/.*'
+            r'https://www\.google\.com/maps/d/.*'
         )
 
         if not map_link_pattern.match(map_link):
