@@ -5,7 +5,7 @@ from typing import Optional
 import numpy as np
 
 from GoogleMyMaps import Layer, Place
-from configs.utils import unify_string
+from configs.utils import are_strings_similar
 
 log = logging.getLogger(__name__)
 

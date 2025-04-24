@@ -4,7 +4,7 @@ from typing import Optional, Tuple, List
 from openpyxl.utils import get_column_letter
 
 from GoogleMyMaps.models import *
-from configs.utils import unify_string
+from configs.utils import are_strings_similar
 from .areas import Areas
 from .course_trail import CourseTrail
 from .courses import Courses
@@ -294,7 +294,7 @@ class ObstacleList(ExcelFile):
             Optional[int]: The index of the found obstacle, or None if not found.
         """
         for obstacle in obstacles:
-            if unify_string(analysed_obstacle.name) == unify_string(obstacle.name):
+            if are_strings_similar(analysed_obstacle.name, obstacle.name):
                 obstacle_number = self.courses.get_obstacle_number(obstacle)
                 if obstacle_number is None:
                     log.warning("Obstacle without number: %s, %s", obstacle.name, obstacle.icon)

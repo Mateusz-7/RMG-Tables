@@ -53,7 +53,7 @@ def start_application(file_path: str) -> None:
         log.error("Unsupported operating system: %s", platform.system())
 
 
-def unify_string(string: str) -> str:
+def unify_string(string: str) -> str | None:
     """
     Standardize a string by removing whitespace and converting to uppercase.
     
@@ -63,7 +63,22 @@ def unify_string(string: str) -> str:
     Returns:
         str: String without spaces, new line characters, and with UPPER
     """
+    if string is None:
+        return None
     return string.upper().replace("\n", "").replace(" ", "")
+
+def are_strings_similar(string1: str, string2: str) -> bool:
+    if string1 is None or string2 is None:
+        return False
+    unified_str1 = unify_string(string1)
+    unified_str2 = unify_string(string2)
+    if (
+            unified_str1 == unified_str2 or
+            unified_str1 in unified_str2 or
+            unified_str2 in unified_str1
+    ):
+        return True
+    return False
 
 
 class Colors(str, enum.Enum):
