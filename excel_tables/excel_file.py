@@ -31,9 +31,9 @@ class ExcelFile(ABC):
             file_path (str): Path to the Excel file to be opened
             worksheet_number (int, optional): Index of the worksheet to be used (0-based). Defaults to 0.
         """
-        self.file_path = resource_path(file_path)
-        self.file_name = os.path.basename(file_path)
-        self.wb, self.ws = ExcelFile.open_file(self.file_path, worksheet_number)
+        self.FILE_PATH = resource_path(file_path)
+        self.FILE_NAME = os.path.basename(file_path)
+        self.wb, self.ws = ExcelFile.open_file(self.FILE_PATH, worksheet_number)
 
     @staticmethod
     def open_file(file_name: str, worksheet_number: int = 0) -> Tuple[Optional[Workbook], Optional[Worksheet]]:
@@ -74,7 +74,7 @@ class ExcelFile(ABC):
         Raises:
             ValueError: If the workbook is not initialized.
         """
-        log.info("Saving file: %s", self.file_name)
+        log.info("Saving file: %s", self.FILE_NAME)
         if self.wb is None:
             raise ValueError("Workbook is not initialized")
 

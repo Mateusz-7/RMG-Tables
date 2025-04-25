@@ -6,9 +6,12 @@ from openpyxl.utils import get_column_letter
 from GoogleMyMaps.models import *
 from configs.utils import are_strings_similar
 from .areas import Areas
+from .big_obstacle_info import BigObstacleInfo
 from .course_trail import CourseTrail
 from .courses import Courses
 from .excel_file import ExcelFile
+from .kids_obstacle_info import KidsObstacleInfo
+from .obstacle_info import ObstacleInfo
 
 log = logging.getLogger(__name__)
 
@@ -40,15 +43,15 @@ class ObstacleList(ExcelFile):
     COLUMN_NAME = 19
     COLUMN_WOLO = 20
     COLUMN_JUDGE = 21
-    # COLUMN_WORKER = 22
+    COLUMN_WORKER = 22
     COLUMN_INFO = 24
     ROW_HEADERS = 1
     ROW_OBSTACLES_OFFSET = 2
     ROW_MAX = 200
     ROW_KIDS_SPACING = 1
 
-    file_name = "LISTA PRZESZKÓD"
-    file_path = f"WZORY/{file_name}.xlsx"
+    FILE_NAME = "LISTA PRZESZKÓD"
+    FILE_PATH = f"WZORY/{FILE_NAME}.xlsx"
 
     # List to store obstacles that couldn't be found
     not_found_obstacles: List[Tuple[Layer, int, Place]] = []
@@ -60,10 +63,12 @@ class ObstacleList(ExcelFile):
         Parameters:
             google_map (Map): The Google Map object containing course and obstacle data.
         """
-        super().__init__(self.file_path)
+        super().__init__(self.FILE_PATH)
         self.google_map = google_map
         self.courses = Courses(google_map)
         self.areas = Areas(google_map)
+        self.kids_obstacle_info = KidsObstacleInfo()
+        self.big_obstacle_info = BigObstacleInfo()
 
     def _write_headlines(self):
         """
@@ -104,28 +109,30 @@ class ObstacleList(ExcelFile):
         self._write_cell(course_column + 1, obstacle_row, obstacle_area)
         self._write_cell(course_column + 2, obstacle_row, obstacle_distance)
 
-    def _write_obstacle_name_data(self, obstacle: Place, obstacle_row: int):
+    def _write_obstacle_name_data(self, obstacle: Place, obstacle_row: int, obstacle_info: ObstacleInfo):
         """
         Write obstacle name and associated data to the Excel file.
         
         Parameters:
             obstacle (Place): The obstacle place object containing name and data.
             obstacle_row (int): The row number for the obstacle.
+            obstacle_info (ObstacleInfo): The obstacle information object to extract data from.
         """
         self._write_cell(self.COLUMN_NAME, obstacle_row, obstacle.name)
         if obstacle.name.upper() in self.IMPORTANT_OBSTACLE_NAMES:
             self._bold_cell(self.COLUMN_NAME, obstacle_row)
 
-        # self.ws["V" + str(cell_line)] = # Responsible person
-
         data = self._get_obstacle_data(obstacle)
         if data is None:
             return
-
         wolo, judge, description = data
+
+        worker = obstacle_info.get_worker(obstacle.name)
+
         self._write_cell(self.COLUMN_WOLO, obstacle_row, wolo if wolo > 0 else None)
         self._write_cell(self.COLUMN_JUDGE, obstacle_row, judge if judge > 0 else None)
         self._write_cell(self.COLUMN_INFO, obstacle_row, description)
+        self._write_cell(self.COLUMN_WORKER, obstacle_row, worker)
 
     def _get_obstacle_data(self, obstacle: Place) -> Optional[Tuple[int, int, str]]:
         """
@@ -201,7 +208,8 @@ class ObstacleList(ExcelFile):
         obstacle_distance = CourseTrail(course).get_obstacle_distance(obstacle)
         self._write_obstacle_number_area_km(course_column, obstacle_row, obstacle_number, obstacle_area_number,
                                             obstacle_distance)
-        self._write_obstacle_name_data(obstacle, obstacle_row)
+        obstacle_info = self.kids_obstacle_info if "KIDS" in course.name.upper() else self.big_obstacle_info
+        self._write_obstacle_name_data(obstacle, obstacle_row, obstacle_info)
 
     def _write_obstacles_numbers(self, course: Layer):
         """
@@ -359,9 +367,13 @@ class ObstacleList(ExcelFile):
         Returns:
             Optional[str]: The path to the saved file, or None if saving failed.
         """
+        if not self.courses.courses_list:
+            log.warning("Courses list is empty. No data to save.")
+            return None
         self._write_headlines()
         self._write_course_info(self.courses.courses_list[0])
-        self._write_course_info(self.courses.courses_list[-1])
+        if "KIDS" in self.courses.courses_list[-1].name.upper():
+            self._write_course_info(self.courses.courses_list[-1])
         for course in self.courses.courses_list[1:-1]:
             self._write_obstacles_numbers(course)
         self._sum_and_write_number_of_volunteers_and_judges()
