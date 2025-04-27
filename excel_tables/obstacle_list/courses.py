@@ -24,7 +24,8 @@ class Courses:
         self._does_kids_course_exist = any(
             are_strings_similar("KIDS", course.name) for course in self.courses_list
         )
-        self._set_kids_as_last_course()
+        if self.does_kids_course_exist:
+            self._set_kids_as_last_course()
 
     @property
     def does_kids_course_exist(self) -> bool:
@@ -40,11 +41,13 @@ class Courses:
         """
         Reorder courses to ensure the kids' course is always the last one in the list.
         """
-        for course in self.courses_list:
-            if "KIDS" in course.name.upper():
-                self.courses_list.remove(course)
-                self.courses_list.append(course)
-                break
+        kids_course = next(
+            (course for course in self.courses_list if are_strings_similar("KIDS", course.name)),
+            None
+        )
+        if kids_course:
+            self.courses_list.remove(kids_course)
+            self.courses_list.append(kids_course)
 
     @staticmethod
     def get_obstacle_number(obstacle: Place) -> Optional[int]:

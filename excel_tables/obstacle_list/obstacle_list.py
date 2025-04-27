@@ -372,7 +372,7 @@ class ObstacleList(ExcelFile):
             return None
         self._write_headlines()
         self._write_course_info(self.courses.courses_list[0])
-        if "KIDS" in self.courses.courses_list[-1].name.upper():
+        if self.courses.does_kids_course_exist:
             self._write_course_info(self.courses.courses_list[-1])
         for course in self.courses.courses_list[1:-1]:
             self._write_obstacles_numbers(course)
