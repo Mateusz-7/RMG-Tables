@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, font
 
-from excel_tables.obstacle_list import ObstacleList
+from excel_tables.obstacle_list.obstacle_list import ObstacleList
 from configs.utils import Colors
 
 
