@@ -2,6 +2,7 @@ import re
 from typing import Optional
 
 from GoogleMyMaps import *
+from configs.utils import are_strings_similar
 
 
 class Courses:
@@ -20,7 +21,20 @@ class Courses:
             layer for layer in google_map.layers
             if layer.name.upper().startswith("TRASA")
         ]
+        self._does_kids_course_exist = any(
+            are_strings_similar("KIDS", course.name) for course in self.courses_list
+        )
         self._set_kids_as_last_course()
+
+    @property
+    def does_kids_course_exist(self) -> bool:
+        """
+        Check if a kids' course exists in the courses' list.
+
+        Returns:
+            bool: True if a kids' course exists, False otherwise.
+        """
+        return self._does_kids_course_exist
 
     def _set_kids_as_last_course(self):
         """
