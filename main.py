@@ -100,4 +100,10 @@ if __name__ == '__main__':
     main()
 
     # TODO:
-    # - dodanie odpowiedzialnej osoby
+    # - rozdzielenie last found obstacle na doroslych i kids (lepsze numerowanie family)
+    # - najpierw dokładne sprawdzenie, później podobne
+
+    # - poprawa odpowiedzialnej osoby
+    # - wolo, sędzia, tabliczki, palety, materace
+
+    # - dodanie czcionki
