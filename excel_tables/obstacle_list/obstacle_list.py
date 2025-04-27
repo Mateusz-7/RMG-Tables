@@ -1,4 +1,5 @@
 import logging
+from dataclasses import dataclass
 from typing import Optional, Tuple, List
 
 from openpyxl.utils import get_column_letter
@@ -15,6 +16,30 @@ from .courses import Courses
 
 log = logging.getLogger(__name__)
 
+
+@dataclass
+class LastFound:
+    """
+    A class to keep track of the last found obstacle indices and whether the current course is for kids.
+
+    Attributes:
+        obstacle_index (int): The index of the last found obstacle in the main course.
+        kids_obstacle_index (int): The index of the last found obstacle in the kids course.
+        in_kids (bool): A flag indicating whether the current course is for kids.
+    """
+
+    def __init__(self, obstacle_index: int = -1, kids_obstacle_index: int = -1, in_kids: bool = False):
+        """
+        Initialize the LastFound object with default values.
+
+        Parameters:
+            obstacle_index (int): The index of the last found obstacle in the main course.
+            kids_obstacle_index (int): The index of the last found obstacle in the kids course.
+            in_kids (bool): A flag indicating whether the current course is for kids.
+        """
+        self.obstacle_index = obstacle_index
+        self.kids_obstacle_index = kids_obstacle_index
+        self.in_kids = in_kids
 
 class ObstacleList(ExcelFile):
     """
@@ -222,17 +247,17 @@ class ObstacleList(ExcelFile):
         kids_obstacle_row_offset = self.courses.get_course_obstacles_number(
             self.courses.courses_list[0]) + self.ROW_OBSTACLES_OFFSET + self.ROW_KIDS_SPACING
 
-        last_found_obstacle_index = -1
+        last_found = LastFound()
         for analysed_obstacle in course.places:
             if analysed_obstacle.place_type != "Point":
                 continue
 
-            last_found_obstacle_index = self._process_obstacle(
+            last_found = self._process_obstacle(
                 course,
                 analysed_obstacle,
                 obstacle_row_offset,
                 kids_obstacle_row_offset,
-                last_found_obstacle_index
+                last_found
             )
 
     def _process_obstacle(
@@ -241,8 +266,8 @@ class ObstacleList(ExcelFile):
             analysed_obstacle: Place,
             obstacle_row_offset: int,
             kids_obstacle_row_offset: int,
-            last_found_obstacle_index: int
-    ) -> int:
+            last_found: LastFound
+    ) -> LastFound:
         """
         Process an obstacle by trying to find a matching obstacle in the main courses.
         
@@ -251,41 +276,106 @@ class ObstacleList(ExcelFile):
             analysed_obstacle (Place): The obstacle place object to process.
             obstacle_row_offset (int): The row offset for the main course.
             kids_obstacle_row_offset (int): The row offset for the kids course.
-            last_found_obstacle_index (int): The index of the last found obstacle.
-            
+            last_found (dict): A dictionary containing the last found obstacle indices and flags.
+
         Returns:
             int: The updated index of the last found obstacle.
         """
-        found_obstacle_index = self._find_and_write_obstacle(
-            analysed_obstacle,
-            self.courses.courses_list[0].places[last_found_obstacle_index + 1:],
-            course,
-            obstacle_row_offset,
-        )
-        if found_obstacle_index is not None:
-            return last_found_obstacle_index + found_obstacle_index + 1
+        if not last_found.in_kids:
+            found_obstacle_index = self._find_and_write_obstacle(
+                analysed_obstacle,
+                self.courses.courses_list[0].places[last_found.obstacle_index + 1:],
+                course,
+                obstacle_row_offset,
+            )
+            if found_obstacle_index is not None:
+                last_found.obstacle_index += found_obstacle_index + 1
+                last_found.in_kids = False
+                return last_found
 
-        found_obstacle_index = self._find_and_write_obstacle(
-            analysed_obstacle,
-            self.courses.courses_list[0].places[last_found_obstacle_index + 1::-1],
-            course,
-            obstacle_row_offset,
-        )
-        if found_obstacle_index is not None:
-            return last_found_obstacle_index + found_obstacle_index + 1
+            found_obstacle_index = self._find_and_write_obstacle(
+                analysed_obstacle,
+                self.courses.courses_list[0].places[last_found.obstacle_index::-1],
+                course,
+                obstacle_row_offset,
+            )
+            if found_obstacle_index is not None:
+                last_found.obstacle_index -= found_obstacle_index
+                last_found.in_kids = False
+                return last_found
 
-        found_obstacle_index = self._find_and_write_obstacle(
-            analysed_obstacle,
-            self.courses.courses_list[-1].places,
-            course,
-            kids_obstacle_row_offset,
-        )
+            # What if no kids? TODO: create a method to check if kids are in the course
+            found_obstacle_index = self._find_and_write_obstacle(
+                analysed_obstacle,
+                self.courses.courses_list[-1].places[last_found.kids_obstacle_index + 1:],
+                course,
+                kids_obstacle_row_offset,
+            )
+            if found_obstacle_index is not None:
+                last_found.kids_obstacle_index += found_obstacle_index + 1
+                last_found.in_kids = True
+                return last_found
+
+            found_obstacle_index = self._find_and_write_obstacle(
+                analysed_obstacle,
+                self.courses.courses_list[-1].places[last_found.kids_obstacle_index::-1],
+                course,
+                kids_obstacle_row_offset,
+            )
+            if found_obstacle_index is not None:
+                last_found.kids_obstacle_index -= found_obstacle_index
+                last_found.in_kids = True
+                return last_found
+        else:
+            # What if no kids? TODO: create a method to check if kids are in the course
+            found_obstacle_index = self._find_and_write_obstacle(
+                analysed_obstacle,
+                self.courses.courses_list[-1].places[last_found.kids_obstacle_index + 1:],
+                course,
+                kids_obstacle_row_offset,
+            )
+            if found_obstacle_index is not None:
+                last_found.kids_obstacle_index += found_obstacle_index + 1
+                last_found.in_kids = True
+                return last_found
+
+            found_obstacle_index = self._find_and_write_obstacle(
+                analysed_obstacle,
+                self.courses.courses_list[-1].places[last_found.kids_obstacle_index::-1],
+                course,
+                kids_obstacle_row_offset,
+            )
+            if found_obstacle_index is not None:
+                last_found.kids_obstacle_index -= found_obstacle_index
+                last_found.in_kids = True
+                return last_found
+
+            found_obstacle_index = self._find_and_write_obstacle(
+                analysed_obstacle,
+                self.courses.courses_list[0].places[last_found.obstacle_index + 1:],
+                course,
+                obstacle_row_offset,
+            )
+            if found_obstacle_index is not None:
+                last_found.obstacle_index += found_obstacle_index + 1
+                last_found.in_kids = False
+                return last_found
+
+            found_obstacle_index = self._find_and_write_obstacle(
+                analysed_obstacle,
+                self.courses.courses_list[0].places[last_found.obstacle_index::-1],
+                course,
+                obstacle_row_offset,
+            )
+            if found_obstacle_index is not None:
+                last_found.obstacle_index -= found_obstacle_index
+                last_found.in_kids = False
+                return last_found
+
         if found_obstacle_index is None:
             log.warning("-Unable to find obstacle: %s from course: %s", analysed_obstacle.name, course.name)
-            # Add to list with course name
             self.add_to_list(analysed_obstacle, course)
-
-        return last_found_obstacle_index
+        return last_found
 
     def _find_and_write_obstacle(self, analysed_obstacle: Place, obstacles, course: Layer, row_offset: int) -> \
             Optional[int]:
