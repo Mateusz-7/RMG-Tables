@@ -1,4 +1,4 @@
-from excel_tables.obstacle_info import ObstacleInfo
+from obstacle_info import ObstacleInfo
 
 
 class BigObstacleInfo(ObstacleInfo):

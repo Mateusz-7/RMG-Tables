@@ -5,13 +5,13 @@ from openpyxl.utils import get_column_letter
 
 from GoogleMyMaps.models import *
 from configs.utils import are_strings_similar
+from excel_tables.excel_file import ExcelFile
+from excel_tables.obstacle_info.big_obstacle_info import BigObstacleInfo
+from excel_tables.obstacle_info.kids_obstacle_info import KidsObstacleInfo
+from excel_tables.obstacle_info.obstacle_info import ObstacleInfo
 from .areas import Areas
-from .big_obstacle_info import BigObstacleInfo
 from .course_trail import CourseTrail
 from .courses import Courses
-from .excel_file import ExcelFile
-from .kids_obstacle_info import KidsObstacleInfo
-from .obstacle_info import ObstacleInfo
 
 log = logging.getLogger(__name__)
 

@@ -22,7 +22,7 @@ class ExcelFile(ABC):
     
     Provides functionality for opening, manipulating, and saving Excel workbooks.
     """
-    
+
     def __init__(self, file_path: str, worksheet_number: int = 0):
         """
         Initialize an Excel file handler.

@@ -8,7 +8,7 @@ class Courses:
     """
     A class to manage race courses from Google My Maps data.
     """
-    
+
     def __init__(self, google_map: Map):
         """
         Initialize the Courses object with courses from a Google Map.

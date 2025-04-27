@@ -136,7 +136,8 @@ class CourseTrail:
             log.warning("Trail is None")
             return None
 
-        segment_idx, distance_along, perpendicular_distance = CourseTrail._find_closest_line_segment(obstacle.coords, trail)
+        segment_idx, distance_along, perpendicular_distance = CourseTrail._find_closest_line_segment(obstacle.coords,
+                                                                                                     trail)
 
         return self._calculate_total_distance(segment_idx, distance_along, trail)
 
@@ -189,7 +190,6 @@ class CourseTrail:
         r = 6371000  # Radius of earth in meters
         return r * c
 
-
     @staticmethod
     def _point_to_line_distance(point, line_start, line_end):
         """
@@ -225,7 +225,7 @@ class CourseTrail:
         if d_point_to_start == 0 or d_start_to_end == 0:
             return d_point_to_start, 0
         cos_angle = (d_point_to_start ** 2 + d_start_to_end ** 2 - d_point_to_end ** 2) / (
-                    2 * d_point_to_start * d_start_to_end)
+                2 * d_point_to_start * d_start_to_end)
 
         # Handle floating point errors
         if cos_angle > 1:
@@ -242,7 +242,7 @@ class CourseTrail:
         if d_point_to_end == 0 or d_start_to_end == 0:
             return d_point_to_end, d_start_to_end
         cos_angle = (d_point_to_end ** 2 + d_start_to_end ** 2 - d_point_to_start ** 2) / (
-                    2 * d_point_to_end * d_point_to_start)
+                2 * d_point_to_end * d_point_to_start)
 
         # Handle floating point errors
         if cos_angle > 1:
@@ -268,7 +268,6 @@ class CourseTrail:
         d_along_line = sqrt(d_point_to_start ** 2 - height ** 2)
 
         return height, d_along_line
-
 
     @staticmethod
     def _find_closest_line_segment(point, line_points):

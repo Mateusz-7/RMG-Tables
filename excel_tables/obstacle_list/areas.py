@@ -10,7 +10,7 @@ class Areas:
     """
     A class for managing and analyzing geographical areas from Google Maps.
     """
-    
+
     def __init__(self, google_map: Map):
         """
         Initialize the Areas object with areas and polygons from a Google Map.
@@ -49,7 +49,7 @@ class Areas:
             List[Polygon]: A list of Shapely Polygon objects created from the coordinates of each Place.
         """
         return [Polygon(area.coords) for area in areas]
-    
+
     @staticmethod
     def _get_point_from_obstacle(obstacle: Place) -> Optional[Point]:
         """
@@ -66,7 +66,7 @@ class Areas:
             return None
         else:
             return Point(obstacle.coords[0], obstacle.coords[1])
-    
+
     @staticmethod
     def _get_area_number(area: Place) -> Optional[int]:
         """
@@ -82,7 +82,7 @@ class Areas:
         if match:
             return int(match.group(1))
         return None
-    
+
     def _get_obstacle_area(self, obstacle: Place) -> Optional[Place]:
         """
         Find the area that contains a given obstacle.
@@ -97,7 +97,7 @@ class Areas:
             if polygon.contains(Areas._get_point_from_obstacle(obstacle)):
                 return self.areas[area_index]
         return None
-    
+
     def get_obstacle_area_number(self, obstacle: Place) -> Optional[int]:
         """
         Get the area number for the area containing a given obstacle.

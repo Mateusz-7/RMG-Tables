@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 
 from configs.utils import are_strings_similar
 from excel_tables.excel_file import ExcelFile
