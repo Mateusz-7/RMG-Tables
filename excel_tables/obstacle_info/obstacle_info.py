@@ -34,7 +34,7 @@ class ObstacleInfo(ExcelFile, ABC):
         """
         Get the worker responsible for the obstacle.
 
-        Args:
+        Parameters:
             obstacle_name (str): The name of the obstacle.
 
         Returns:

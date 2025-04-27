@@ -10,13 +10,13 @@ log = logging.getLogger(__name__)
 def resource_path(relative_path: str) -> str:
     """
     Get the absolute path to a resource, works for both development and PyInstaller frozen applications.
-    
+
     This function handles path resolution differently depending on whether the application
     is running in a development environment or as a PyInstaller frozen executable.
-    
+
     Parameters:
         relative_path (str): The relative path to the resource file or directory
-        
+
     Returns:
         str: The absolute path to the resource
     """
@@ -28,17 +28,17 @@ def resource_path(relative_path: str) -> str:
 def start_application(file_path: str) -> None:
     """
     Open a file with the default application based on the operating system.
-    
+
     This function detects the current operating system and uses the appropriate
     method to open the specified file with its associated default application.
     Supports Windows, macOS (Darwin), and Linux.
-    
+
     Parameters:
         file_path (str): The path to the file to be opened
-        
+
     Returns:
         None
-    
+
     Raises:
         Logs an error if the operating system is not supported
     """
@@ -56,10 +56,10 @@ def start_application(file_path: str) -> None:
 def unify_string(string: str) -> str | None:
     """
     Standardize a string by removing whitespace and converting to uppercase.
-    
+
     Parameters:
         string (str): String to unify
-        
+
     Returns:
         str: String without spaces, new line characters, and with UPPER
     """
@@ -68,6 +68,21 @@ def unify_string(string: str) -> str | None:
     return string.upper().replace("\n", "").replace(" ", "")
 
 def are_strings_similar(string1: str, string2: str) -> bool:
+    """
+    Compare two strings to determine if they are similar.
+
+    This function checks if two strings are similar by:
+    1. Converting both to uppercase and removing spaces and newlines
+    2. Checking if they are equal
+    3. Checking if one is a substring of the other
+
+    Parameters:
+        string1 (str): First string to compare
+        string2 (str): Second string to compare
+
+    Returns:
+        bool: True if the strings are considered similar, False otherwise
+    """
     if string1 is None or string2 is None:
         return False
     unified_str1 = unify_string(string1)
@@ -84,7 +99,7 @@ def are_strings_similar(string1: str, string2: str) -> bool:
 class Colors(str, enum.Enum):
     """
     Color constants used throughout the application.
-    
+
     This enumeration provides a centralized collection of color hex codes organized by categories:
     - Base UI colors (background, text, highlights)
     - Basic colors (black, white, primary colors)
@@ -93,13 +108,13 @@ class Colors(str, enum.Enum):
     - Dark mode friendly colors
     - Pastel colors
     - Grayscale gradient shades
-    
+
     Each color is represented as a hexadecimal string value (#RRGGBB format).
-    
+
     Inherits from:
         str: Allows the enum values to be used directly as strings
         enum.Enum: Provides enumeration functionality
-    
+
     Usage:
         Colors.BG_COLOR  # Returns "#232323"
     """

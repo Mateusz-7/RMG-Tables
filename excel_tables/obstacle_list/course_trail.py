@@ -100,12 +100,14 @@ class CourseTrail:
     @staticmethod
     def _get_first_obstacle_in_course(course_places: list[Place]) -> Place | None:
         """
-        Determines the first obstacle in a given list of course places, where an obstacle
-        is defined as a place with a type of "Point".
+        Determine the first obstacle in a given list of course places.
 
-        :param course_places: A list of Place objects representing locations in the course.
-        :return: The first Place object in the list with a place_type of "Point",
-            or None if no such Place exists.
+        Parameters:
+            course_places (list[Place]): A list of Place objects representing locations in the course.
+
+        Returns:
+            Place | None: The first Place object in the list with a place_type of "Point",
+                         or None if no such Place exists.
         """
         for obstacle in course_places:
             if obstacle.place_type == "Point":
