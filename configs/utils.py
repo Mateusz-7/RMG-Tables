@@ -2,6 +2,7 @@ import enum
 import logging
 import os
 import platform
+import subprocess
 import sys
 
 log = logging.getLogger(__name__)
@@ -43,15 +44,17 @@ def start_application(file_path: str) -> None:
         Logs an error if the operating system is not supported
     """
     log.info("Opening file: %s", file_path)
-    if platform.system() == "Windows":
-        os.startfile(file_path)
-    elif platform.system() == "Darwin":
-        os.system("open '" + file_path + "'")
-    elif platform.system() == "Linux":
-        os.system("xdg-open '" + file_path + "'")
-    else:
-        log.error("Unsupported operating system: %s", platform.system())
-
+    try:
+        if platform.system() == "Windows":
+            os.startfile(file_path)
+        elif platform.system() == "Darwin":
+            subprocess.run(["open", file_path], check=True)
+        elif platform.system() == "Linux":
+            subprocess.run(["xdg-open", file_path], check=True)
+        else:
+            log.error("Unsupported operating system: %s", platform.system())
+    except Exception as e:
+        log.error("Failed to open file %s: %s", file_path, str(e))
 
 def unify_string(string: str) -> str | None:
     """
