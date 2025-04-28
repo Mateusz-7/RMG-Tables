@@ -194,7 +194,7 @@ fabric.properties
 dist/
 build/
 WZORY/
-Runmageddon.ttf
+*.ttf
 *.xlsx
 !/WZORY/*.xlsx
 
